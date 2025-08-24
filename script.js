@@ -5,131 +5,60 @@ document.addEventListener('DOMContentLoaded', () => {
             page_title: "LLM Fit: GPU Memory Calculator",
             main_header: "🧩 LLM Fit",
             subtitle: "Your LLM-to-GPU Sizing Tool",
+            load_models_manually: "Running locally. Load models.json manually:",
             model_catalog: "Model Catalog",
-            search_label: "Search families and variants",
-            search_placeholder: "e.g., llama, mixtral, qwen2, gemma2",
             family: "Family",
             variant: "Variant",
-            architecture: "Architecture of Selected Model",
-            layers_l: "Layers L",
-            hidden_h: "Hidden H",
-            heads_a: "Heads A",
-            kv_heads: "KV Heads",
-            ffn_multiplier: "FFN Multiplier",
-            vocab_v: "Vocabulary V",
-            tie_embeddings: "Tie Embeddings",
-            context_window: "Context, tokens",
-            yes: "Yes",
-            no: "No",
+            architecture: "Core Architecture",
+            architecture_details: "Architectural Details (Reference)",
+            layers_l: "Layers L", hidden_h: "Hidden H", heads_a: "Heads A", kv_heads: "KV Heads", ffn_multiplier: "FFN Multiplier", vocab_v: "Vocabulary V", tie_embeddings: "Tie Embeddings", context_window: "Context",
+            norm_type: "Normalization", activation_fn: "Activation Fn", mlp_structure: "MLP Structure", pos_embedding: "Pos. Embedding",
+            yes: "Yes", no: "No",
             description_tech: "Description & Technologies",
-            model_notes_placeholder: "Brief description, attention mechanisms, RoPE, SWA, MoE, etc. will be shown here.",
+            model_notes_placeholder: "Select a model to see its description.",
             mode_and_params: "Mode & Calculation Parameters",
-            training: "Training",
-            inference: "Inference",
-            precision: "Precision",
-            precision_amp: "AMP (BF16 weights + FP32 master)",
-            precision_bf16: "BF16 or FP16",
-            precision_fp32: "FP32",
-            precision_qlora: "QLoRA (4-bit base + LoRA)",
-            optimizer: "Optimizer",
-            optimizer_sgdm: "SGD with Momentum",
-            dp_gpus: "Data Parallel GPUs",
-            zero_0: "0 (Off)",
-            zero_1: "1 (Optimizer Sharding)",
-            zero_2: "2 (+ Gradient Sharding)",
-            zero_3: "3 (+ Weight Sharding)",
-            seq_len_s: "Sequence Length S",
-            batch_per_gpu_b: "Batch per GPU B",
-            full: "Full",
-            enable_lora: "Enable LoRA",
-            lora_rank: "Rank (r)",
-            weight_quantization: "Weight Quantization",
-            kv_cache_quantization: "KV Cache Quantization",
-            batch_size: "Batch Size",
-            results: "Results",
-            model_parameters: "Model Parameters",
-            memory_per_gpu: "Memory per GPU",
+            training: "Training", inference: "Inference",
+            precision: "Precision", precision_amp: "AMP (BF16 + FP32 master)", precision_bf16: "BF16/FP16", precision_fp32: "FP32", precision_qlora: "QLoRA (4-bit base)",
+            optimizer: "Optimizer", optimizer_sgdm: "SGD w/ Momentum",
+            dp_gpus: "Data Parallel GPUs", zero_0: "0 (Off)", zero_1: "1 (Opt.)", zero_2: "2 (+Grad)", zero_3: "3 (+Weights)",
+            seq_len_s: "Sequence Length S", batch_per_gpu_b: "Batch per GPU B", full: "Full",
+            weight_quantization: "Weight Quantization", kv_cache_quantization: "KV Cache Quantization", batch_size: "Batch Size",
+            results: "Results", model_parameters: "Model Parameters", memory_per_gpu: "Memory per GPU",
             memory_breakdown: "Memory Breakdown",
-            total_with_overhead: "Total (5% overhead)",
-            gpu_recommendations: "GPU Recommendations",
-            gpu_rec_placeholder: "Will be populated automatically",
-            rec_1: "✅ Suitable: RTX 3060 12GB, RTX 4060 Ti 16GB",
-            rec_2: "✅ Suitable: RTX 4070 12GB, A4000 16GB",
-            rec_3: "⚠️ Recommended: RTX 3090/4090 24GB, A5000 24GB",
-            rec_4: "🔴 Required: A6000 48GB, A100 40GB",
-            rec_5: "🔴 Required: A100 80GB or multiple GPUs with Model Parallelism",
-            weights: "Model Weights",
-            master_weights: "FP32 Master Weights (AMP)",
-            gradients: "Gradients",
-            optimizer_states: "Optimizer States",
-            activations: "Activations",
-            kv_cache: "KV Cache",
-            buffers: "Buffers & Scratchpad"
+            gpu_recommendations: "GPU Recommendations", gpu_rec_placeholder: "Results will be shown here.",
+            rec_1: "✅ Suitable: RTX 3060 12GB, RTX 4060 Ti 16GB", rec_2: "✅ Suitable: RTX 4070 12GB, A4000 16GB", rec_3: "⚠️ Recommended: RTX 3090/4090 24GB, A5000 24GB", rec_4: "🔴 Required: A6000 48GB, A100 40GB", rec_5: "🔴 Required: A100 80GB or multiple GPUs with Model Parallelism",
+            weights: "Model Weights", master_weights: "FP32 Master Weights (AMP)", gradients: "Gradients", optimizer_states: "Optimizer States", activations: "Activations", kv_cache: "KV Cache", buffers: "Buffers & Scratchpad",
+            mem_per_sequence: "Memory per Sequence",
+            moe_info: "This is a Mixture-of-Experts (MoE) model with {experts} experts, selecting the top {topK} per token."
         },
         ru: {
             page_title: "LLM Fit: Калькулятор памяти GPU",
             main_header: "🧩 LLM Fit",
             subtitle: "Ваш инструмент подбора GPU для LLM",
+            load_models_manually: "Локальный запуск. Загрузите models.json вручную:",
             model_catalog: "Каталог моделей",
-            search_label: "Поиск по семействам и вариантам",
-            search_placeholder: "Например, llama, mixtral, qwen2, gemma2",
-            family: "Семейство",
-            variant: "Вариант",
-            architecture: "Архитектура выбранной модели",
-            layers_l: "Слои L",
-            hidden_h: "Скрытое H",
-            heads_a: "Головы A",
-            kv_heads: "KV головы",
-            ffn_multiplier: "FFN множитель",
-            vocab_v: "Словарь V",
-            tie_embeddings: "Связать эмбеддинги",
-            context_window: "Контекст, токены",
-            yes: "Да",
-            no: "Нет",
+            family: "Семейство", variant: "Вариант",
+            architecture: "Базовая архитектура",
+            architecture_details: "Детали архитектуры (справочно)",
+            layers_l: "Слои L", hidden_h: "Скрытое H", heads_a: "Головы A", kv_heads: "KV головы", ffn_multiplier: "FFN множитель", vocab_v: "Словарь V", tie_embeddings: "Связать эмбеддинги", context_window: "Контекст",
+            norm_type: "Нормализация", activation_fn: "Активация", mlp_structure: "Структура MLP", pos_embedding: "Поз. эмбеддинг",
+            yes: "Да", no: "Нет",
             description_tech: "Описание и технологии",
-            model_notes_placeholder: "Здесь будет краткое описание, особенности внимания, RoPE, SWA, MoE и другое.",
+            model_notes_placeholder: "Выберите модель, чтобы увидеть описание.",
             mode_and_params: "Режим и параметры расчета",
-            training: "Обучение",
-            inference: "Инференс",
-            precision: "Точность",
-            precision_amp: "AMP (веса BF16 + мастер FP32)",
-            precision_bf16: "BF16 или FP16",
-            precision_fp32: "FP32",
-            precision_qlora: "QLoRA (база 4-бит + LoRA)",
-            optimizer: "Оптимизатор",
-            optimizer_sgdm: "SGD с моментом",
-            dp_gpus: "Data Parallel GPU",
-            zero_0: "0 (выключен)",
-            zero_1: "1 (шардинг оптимизатора)",
-            zero_2: "2 (+ шардинг градиентов)",
-            zero_3: "3 (+ шардинг весов)",
-            seq_len_s: "Длина последовательности S",
-            batch_per_gpu_b: "Батч на GPU B",
-            full: "Полный",
-            enable_lora: "Включить LoRA",
-            lora_rank: "Ранг (r)",
-            weight_quantization: "Квантизация весов",
-            kv_cache_quantization: "Квантизация KV кэша",
-            batch_size: "Размер батча",
-            results: "Результаты",
-            model_parameters: "Параметры модели",
-            memory_per_gpu: "Память на 1 GPU",
+            training: "Обучение", inference: "Инференс",
+            precision: "Точность", precision_amp: "AMP (веса BF16 + мастер FP32)", precision_bf16: "BF16/FP16", precision_fp32: "FP32", precision_qlora: "QLoRA (база 4-бит)",
+            optimizer: "Оптимизатор", optimizer_sgdm: "SGD с моментом",
+            dp_gpus: "Data Parallel GPU", zero_0: "0 (выкл.)", zero_1: "1 (Opt.)", zero_2: "2 (+Grad)", zero_3: "3 (+Weights)",
+            seq_len_s: "Длина посл. S", batch_per_gpu_b: "Батч на GPU B", full: "Полный",
+            weight_quantization: "Квантизация весов", kv_cache_quantization: "Квантизация KV кэша", batch_size: "Размер батча",
+            results: "Результаты", model_parameters: "Параметры модели", memory_per_gpu: "Память на 1 GPU",
             memory_breakdown: "Детализация памяти",
-            total_with_overhead: "Итого (с оверхедом 5%)",
-            gpu_recommendations: "Рекомендации по GPU",
-            gpu_rec_placeholder: "Заполнится автоматически",
-            rec_1: "✅ Подойдет: RTX 3060 (12GB), RTX 4060 Ti (16GB)",
-            rec_2: "✅ Подойдет: RTX 4070 (12GB), A4000 (16GB)",
-            rec_3: "⚠️ Рекомендуется: RTX 3090/4090 (24GB), A5000 (24GB)",
-            rec_4: "🔴 Требуется: A6000 (48GB), A100 (40GB)",
-            rec_5: "🔴 Требуется: A100 (80GB) или несколько GPU с Model Parallelism",
-            weights: "Веса модели",
-            master_weights: "FP32 Мастер-веса (AMP)",
-            gradients: "Градиенты",
-            optimizer_states: "Состояния оптимизатора",
-            activations: "Активации",
-            kv_cache: "KV кэш",
-            buffers: "Буферы и оверхед"
+            gpu_recommendations: "Рекомендации по GPU", gpu_rec_placeholder: "Результаты появятся здесь.",
+            rec_1: "✅ Подойдет: RTX 3060 (12GB), RTX 4060 Ti (16GB)", rec_2: "✅ Подойдет: RTX 4070 (12GB), A4000 (16GB)", rec_3: "⚠️ Рекомендуется: RTX 3090/4090 (24GB), A5000 (24GB)", rec_4: "🔴 Требуется: A6000 (48GB), A100 (40GB)", rec_5: "🔴 Требуется: A100 (80GB) или несколько GPU с Model Parallelism",
+            weights: "Веса модели", master_weights: "FP32 Мастер-веса (AMP)", gradients: "Градиенты", optimizer_states: "Состояния оптимизатора", activations: "Активации", kv_cache: "KV кэш", buffers: "Буферы и оверхед",
+            mem_per_sequence: "Память на 1 посл.",
+            moe_info: "Это модель Mixture-of-Experts (MoE) с {experts} экспертами, из которых выбираются {topK} лучших для каждого токена."
         }
     };
 
@@ -141,42 +70,55 @@ document.addEventListener('DOMContentLoaded', () => {
     const $$ = s => document.querySelectorAll(s);
 
     const dom = {
-        family: $('#family'), variant: $('#variant'), search: $('#search'),
+        family: $('#family'), variant: $('#variant'),
         layers: $('#layers'), hidden: $('#hidden'), heads: $('#heads'), kvHeads: $('#kvHeads'), ffnMult: $('#ffnMult'), vocab: $('#vocab'), tieEmb: $('#tieEmb'), ctx: $('#ctx'),
+        norm: $('#norm'), activation: $('#activation'), mlp: $('#mlp'), pos_embedding: $('#pos_embedding'),
         precisionTrain: $('#precisionTrain'), optimizer: $('#optimizer'), dp: $('#dp'), zero: $('#zero'), seqTrain: $('#seqTrain'), mbsz: $('#mbsz'), ckpt: $('#ckpt'), flash: $('#flash'),
-        loraEnabled: $('#loraEnabled'), loraR: $('#loraR'),
         quant: $('#quant'), quantKV: $('#quantKV'), seqInfer: $('#seqInfer'), batchInfer: $('#batchInfer'),
-        paramsTotal: $('#paramsTotal'), memPerGpu: $('#memPerGpu'), tableBody: $('#tableBody'), sumWithOv: $('#sumWithOv'), gpuRec: $('#gpu_recommendation'),
+        paramsTotal: $('#paramsTotal'), memPerGpu: $('#memPerGpu'), tableBody: $('#tableBody'), gpuRec: $('#gpu_recommendation'),
         modelNotes: $('#modelNotes'), modelLinks: $('#modelLinks'),
         tabs: { train: $('#tab-train'), infer: $('#tab-infer') },
         panes: { train: $('#pane-train'), infer: $('#pane-infer') },
         themeToggle: $('#theme-toggle'),
-        langButtons: { en: $('#lang-en'), ru: $('#lang-ru') }
+        langButtons: { en: $('#lang-en'), ru: $('#lang-ru') },
+        localFileLoader: $('#local-file-loader'),
+        modelFileInput: $('#model-file-input'),
     };
 
     // --- HELPERS ---
     const toGB = b => b / (1024 ** 3);
+    const toMB = b => b / (1024 ** 2);
     const fmtGB = x => `${x.toFixed(2)} GB`;
+    const fmtMB = x => `${x.toFixed(1)} MB`;
     const t = (key, lang = currentLang) => translations[lang][key] || key;
 
     // --- CORE LOGIC ---
     async function main() {
-        await loadModels();
         setupTheme();
         setupLanguage();
-        setupUI();
+        await loadModels();
         setupEventListeners();
         loadStateFromHash();
+    }
+
+    function finishInitialization() {
+        setupUI();
         calculate();
     }
 
     async function loadModels() {
+        if (window.location.protocol === 'file:') {
+            dom.localFileLoader.style.display = 'block';
+            return; // Wait for user to upload file
+        }
         try {
             const response = await fetch('models.json');
             MODELS = await response.json();
+            finishInitialization();
         } catch (error) {
-            console.error("Failed to load models.json:", error);
-            alert("Could not load model data. Please check the console for errors.");
+            console.error("Failed to fetch models.json:", error);
+            dom.localFileLoader.style.display = 'block';
+            alert("Could not fetch model data. Please upload models.json manually.");
         }
     }
 
@@ -187,11 +129,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupEventListeners() {
+        dom.modelFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    MODELS = JSON.parse(e.target.result);
+                    dom.localFileLoader.style.display = 'none';
+                    finishInitialization();
+                } catch (err) {
+                    alert("Error parsing models.json: " + err.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+
         Object.values(dom.langButtons).forEach(btn => btn.addEventListener('click', (e) => setLanguage(e.target.id.split('-')[1])));
         dom.themeToggle.addEventListener('click', toggleTheme);
         dom.family.addEventListener('change', () => { updateVariants(); applyVariant(); calculate(); saveStateToHash(); });
         dom.variant.addEventListener('change', () => { applyVariant(); calculate(); saveStateToHash(); });
-        dom.search.addEventListener('input', () => { /* Future feature: filter catalog */ });
         $$('input, select').forEach(el => {
             el.addEventListener('change', () => { calculate(); saveStateToHash(); });
             el.addEventListener('input', () => { if (el.type === 'number') calculate(); });
@@ -203,17 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- THEME & LANGUAGE ---
     function applyTranslations() {
         document.documentElement.lang = currentLang;
-        $$('[data-t]').forEach(el => {
-            const key = el.dataset.t;
-            el.textContent = t(key);
-        });
-        $$('[data-t-placeholder]').forEach(el => {
-            const key = el.dataset.tPlaceholder;
-            el.placeholder = t(key);
-        });
-        populateFamilies();
-        updateVariants();
-        calculate();
+        $$('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+        $$('[data-t-placeholder]').forEach(el => el.placeholder = t(el.dataset.tPlaceholder));
+        if (MODELS.length > 0) {
+            populateFamilies();
+            updateVariants();
+            applyVariant();
+            calculate();
+        }
     }
 
     function setLanguage(lang) {
@@ -238,24 +192,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleTheme() {
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        applyTheme(newTheme);
+        applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
     }
 
     function setupTheme() {
         const savedTheme = localStorage.getItem('llm_fit_theme');
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-        applyTheme(theme);
+        applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
     }
 
     // --- UI & STATE MANAGEMENT ---
     function populateFamilies() {
         const currentVal = dom.family.value;
         dom.family.innerHTML = MODELS.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
-        if ([...dom.family.options].some(o => o.value === currentVal)) {
-            dom.family.value = currentVal;
-        }
+        if ([...dom.family.options].some(o => o.value === currentVal)) dom.family.value = currentVal;
     }
 
     function updateVariants() {
@@ -263,9 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!fam) return;
         const currentVal = dom.variant.value;
         dom.variant.innerHTML = fam.variants.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
-        if ([...dom.variant.options].some(o => o.value === currentVal)) {
-            dom.variant.value = currentVal;
-        }
+        if ([...dom.variant.options].some(o => o.value === currentVal)) dom.variant.value = currentVal;
     }
 
     function getFamily() { return MODELS.find(f => f.id === dom.family.value) || MODELS[0]; }
@@ -275,19 +223,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function applyVariant() {
-        const fam = getFamily();
         const v = getVariant();
-        if (!fam || !v) return;
-        dom.layers.value = v.layers;
-        dom.hidden.value = v.hidden;
-        dom.heads.value = v.heads;
-        dom.kvHeads.value = v.kvHeads || v.heads;
-        dom.ffnMult.value = v.ffnMult;
-        dom.vocab.value = v.vocab;
-        dom.tieEmb.value = String(v.tieEmb);
-        dom.ctx.value = v.ctx;
-        dom.modelNotes.textContent = v.notes?.[currentLang] || fam.notes?.[currentLang] || '';
-        dom.modelLinks.innerHTML = fam.links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
+        if (!v) return;
+        Object.keys(v).forEach(key => {
+            if (dom[key]) dom[key].value = v[key];
+        });
+        let notes = v.notes?.[currentLang] || getFamily().notes?.[currentLang] || '';
+        if (v.moe) {
+            notes += ' ' + t('moe_info').replace('{experts}', v.moe.experts).replace('{topK}', v.moe.topK);
+        }
+        dom.modelNotes.textContent = notes;
+        dom.modelLinks.innerHTML = getFamily().links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
     }
 
     function switchTab(tab) {
@@ -300,27 +246,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function collectState() {
-        return {
-            family: dom.family.value, variant: dom.variant.value,
-            layers: +dom.layers.value, hidden: +dom.hidden.value, heads: +dom.heads.value, kvHeads: +dom.kvHeads.value, ffnMult: +dom.ffnMult.value, vocab: +dom.vocab.value, tieEmb: dom.tieEmb.value === 'true',
-            precisionTrain: dom.precisionTrain.value, optimizer: dom.optimizer.value, dp: +dom.dp.value, zero: +dom.zero.value, seqTrain: +dom.seqTrain.value, mbsz: +dom.mbsz.value, ckpt: dom.ckpt.value, flash: dom.flash.value === 'true',
-            loraEnabled: dom.loraEnabled.value, loraR: +dom.loraR.value,
-            quant: dom.quant.value, quantKV: dom.quantKV.value, seqInfer: +dom.seqInfer.value, batchInfer: +dom.batchInfer.value,
-            tab: document.querySelector('.tab-btn.active')?.dataset?.tab || 'train',
-            lang: currentLang
-        };
+        const state = {};
+        for (const key in dom) {
+            const el = dom[key];
+            if (el instanceof HTMLElement && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
+                state[key] = el.type === 'number' ? +el.value : el.value;
+            }
+        }
+        state.tab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'train';
+        state.lang = currentLang;
+        return state;
     }
 
     function applyState(s) {
         if (!s) return;
-        dom.family.value = s.family || MODELS[0].id;
-        updateVariants();
-        dom.variant.value = s.variant || getFamily().variants[0].id;
-        dom.layers.value = s.layers; dom.hidden.value = s.hidden; dom.heads.value = s.heads; dom.kvHeads.value = s.kvHeads; dom.ffnMult.value = s.ffnMult; dom.vocab.value = s.vocab; dom.tieEmb.value = String(s.tieEmb);
-        dom.precisionTrain.value = s.precisionTrain; dom.optimizer.value = s.optimizer; dom.dp.value = s.dp; dom.zero.value = s.zero; dom.seqTrain.value = s.seqTrain; dom.mbsz.value = s.mbsz; dom.ckpt.value = s.ckpt; dom.flash.value = String(s.flash);
-        dom.loraEnabled.value = s.loraEnabled; dom.loraR.value = s.loraR;
-        dom.quant.value = s.quant; dom.quantKV.value = s.quantKV; dom.seqInfer.value = s.seqInfer; dom.batchInfer.value = s.batchInfer;
-        applyVariant();
+        for (const key in s) {
+            if (dom[key] && (dom[key] instanceof HTMLElement)) {
+                dom[key].value = s[key];
+            }
+        }
+        if (MODELS.length > 0) {
+            updateVariants();
+            applyVariant();
+        }
         switchTab(s.tab || 'train');
         if (s.lang && s.lang !== currentLang) setLanguage(s.lang);
     }
@@ -351,10 +299,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function calcParams(s) {
         const { layers: L, hidden: H, heads: A, kvHeads: Ak, ffnMult: fm, vocab: V, tieEmb } = s;
         const kvRatio = Math.max(1, Ak) / Math.max(1, A);
-        const attn = L * (H * H * (2 + 2 * kvRatio)); // Q, O (H*H) + K, V (H*H*kvRatio)
-        const ffn = L * (3 * fm * H * H); // SwiGLU approx.
+        const attn = L * (H * H * (2 + 2 * kvRatio));
+        const ffn = L * (s.mlp === 'GatedMLP' ? 3 : 2) * fm * H * H;
         const emb = V * H;
-        const lmHead = tieEmb ? 0 : V * H;
+        const lmHead = tieEmb === 'true' ? 0 : V * H;
         return attn + ffn + emb + lmHead;
     }
 
@@ -367,28 +315,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (s.optimizer === 'adamw') optStates = 2; else if (s.optimizer === 'sgdm') optStates = 1;
 
         const D = Math.max(1, s.dp), zero = s.zero | 0;
-        const partW = zero >= 3 ? 1 / D : 1, partG = zero >= 2 ? 1 / D : 1, partO = zero >= 1 ? 1 / D : 1, partM = zero >= 3 ? 1 / D : 1;
-
-        const isLora = s.loraEnabled === 'on';
-        const loraParams = isLora ? (2 * s.layers * s.hidden * s.loraR * 2) : 0; // Simplified: Q,V
-        const trainParams = isLora ? loraParams : totalParams;
-        const frozenParams = isLora ? totalParams : 0;
+        const partW = zero >= 3 ? 1 / D : 1, partG = zero >= 2 ? 1 / D : 1, partO = zero >= 1 ? 1 / D : 1;
 
         const mem = {};
-        mem.weights = (frozenParams * bytesOf(s.precisionTrain === 'q4lora' ? 'q4lora' : 'fp16')) + (isLora ? 0 : (trainParams * weightBytes * partW));
-        if (masterBytes > 0 && !isLora) mem.masterWeights = totalParams * masterBytes * partM;
-        mem.grads = trainParams * gradBytes * partG;
-        if (optStates > 0) mem.optim = trainParams * optBytes * optStates * partO;
+        mem.weights = totalParams * weightBytes * partW;
+        if (masterBytes > 0) mem.masterWeights = totalParams * masterBytes * (zero >= 3 ? 1 / D : 1);
+        mem.grads = totalParams * gradBytes * partG;
+        if (optStates > 0) mem.optim = totalParams * optBytes * optStates * partO;
 
-        const ckptFactor = s.ckpt === 'full' ? 1 : 24; // Heuristic
-        mem.activations = s.layers * s.hidden * s.seqTrain * s.mbsz * actBytes / ckptFactor;
-        if (!s.flash) mem.activations += s.layers * s.heads * s.seqTrain * s.seqTrain * s.mbsz * actBytes;
+        const ckptFactor = s.ckpt === 'full' ? 1 : Math.sqrt(s.layers); // Heuristic
+        const singleSeqActivations = s.layers * s.hidden * s.seqTrain * actBytes / ckptFactor;
+        mem.activations = singleSeqActivations * s.mbsz;
+        if (s.flash !== 'true') mem.activations += s.layers * s.heads * s.seqTrain * s.seqTrain * s.mbsz * actBytes;
 
-        table.push([t('weights'), toGB(mem.weights)]);
-        if (mem.masterWeights) table.push([t('master_weights'), toGB(mem.masterWeights)]);
-        table.push([t('gradients'), toGB(mem.grads)]);
-        if (mem.optim) table.push([`${t('optimizer_states')} (${s.optimizer.toUpperCase()})`, toGB(mem.optim)]);
-        table.push([t('activations'), toGB(mem.activations)]);
+        table.push([t('weights'), fmtGB(toGB(mem.weights))]);
+        if (mem.masterWeights) table.push([t('master_weights'), fmtGB(toGB(mem.masterWeights))]);
+        table.push([t('gradients'), fmtGB(toGB(mem.grads))]);
+        if (mem.optim) table.push([`${t('optimizer_states')} (${s.optimizer.toUpperCase()})`, fmtGB(toGB(mem.optim))]);
+        table.push([t('activations'), fmtGB(toGB(mem.activations))]);
+        table.push([t('mem_per_sequence'), fmtMB(toMB(singleSeqActivations))]);
 
         const totalBytes = Object.values(mem).reduce((a, b) => a + (b || 0), 0);
         return { totalParams, table, totalGB: toGB(totalBytes * 1.05) };
@@ -401,25 +346,25 @@ document.addEventListener('DOMContentLoaded', () => {
         mem.weights = totalParams * bytesOf(s.quant);
         const kvCacheBytes = 2 * s.layers * s.kvHeads * (s.hidden / s.heads) * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
         mem.kvCache = kvCacheBytes;
-        mem.buffers = mem.weights * 0.05; // Scratchpad, activations etc.
+        mem.buffers = mem.weights * 0.05;
 
-        table.push([t('weights'), toGB(mem.weights)]);
-        table.push([t('kv_cache'), toGB(mem.kvCache)]);
-        table.push([t('buffers'), toGB(mem.buffers)]);
+        table.push([t('weights'), fmtGB(toGB(mem.weights))]);
+        table.push([t('kv_cache'), fmtGB(toGB(mem.kvCache))]);
+        table.push([t('buffers'), fmtGB(toGB(mem.buffers))]);
 
         const totalBytes = Object.values(mem).reduce((a, b) => a + b, 0);
         return { totalParams, table, totalGB: toGB(totalBytes * 1.05) };
     }
 
     function calculate() {
+        if (MODELS.length === 0) return;
         const s = collectState();
         const mode = document.querySelector('.tab-btn.active').dataset.tab;
         const result = mode === 'train' ? calcTrainingMemory(s) : calcInferenceMemory(s);
 
         dom.paramsTotal.textContent = `${(result.totalParams / 1e9).toFixed(2)}B`;
         dom.memPerGpu.textContent = fmtGB(result.totalGB);
-        dom.tableBody.innerHTML = result.table.map(([name, gb]) => `<tr><td>${name}</td><td>${fmtGB(gb)}</td></tr>`).join('');
-        dom.sumWithOv.textContent = fmtGB(result.totalGB);
+        dom.tableBody.innerHTML = result.table.map(([name, val]) => `<tr><td>${name}</td><td>${val}</td></tr>`).join('');
 
         const g = result.totalGB;
         let recKey = '';

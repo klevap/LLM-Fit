@@ -28,43 +28,40 @@
       <!-- Left Column: Model Catalog & Architecture -->
       <div class="card">
         <div class="section-title" data-t="model_catalog">Model Catalog</div>
-        <div class="row">
-          <div class="col-12">
-            <label data-t="search_label">Search families and variants</label>
-            <input type="text" id="search" data-t-placeholder="search_placeholder" placeholder="e.g., llama, mixtral, qwen2, gemma2" />
-          </div>
+        <div id="local-file-loader" style="display:none;">
+            <label for="model-file-input" data-t="load_models_manually">Load models.json manually</label>
+            <input type="file" id="model-file-input" accept=".json">
         </div>
         <div class="row">
           <div class="col-6"><label data-t="family">Family</label><select id="family"></select></div>
           <div class="col-6"><label data-t="variant">Variant</label><select id="variant"></select></div>
         </div>
 
-        <div class="section-title" style="margin-top:18px" data-t="architecture">Architecture of Selected Model</div>
+        <div class="section-title" style="margin-top:18px" data-t="architecture">Core Architecture</div>
         <div class="row">
-          <div class="col-3"><label data-t="layers_l">Layers L</label><input type="number" id="layers" value="32"></div>
-          <div class="col-3"><label data-t="hidden_h">Hidden H</label><input type="number" id="hidden" value="4096"></div>
-          <div class="col-3"><label data-t="heads_a">Heads A</label><input type="number" id="heads" value="32"></div>
-          <div class="col-3"><label data-t="kv_heads">KV Heads</label><input type="number" id="kvHeads" value="8"></div>
+          <div class="col-3"><label data-t="layers_l">Layers L</label><input type="number" id="layers"></div>
+          <div class="col-3"><label data-t="hidden_h">Hidden H</label><input type="number" id="hidden"></div>
+          <div class="col-3"><label data-t="heads_a">Heads A</label><input type="number" id="heads"></div>
+          <div class="col-3"><label data-t="kv_heads">KV Heads</label><input type="number" id="kvHeads"></div>
         </div>
         <div class="row">
-          <div class="col-3"><label data-t="ffn_multiplier">FFN Multiplier</label><input type="number" id="ffnMult" value="3.5" step="0.1"></div>
-          <div class="col-3"><label data-t="vocab_v">Vocabulary V</label><input type="number" id="vocab" value="128256"></div>
-          <div class="col-3"><label data-t="tie_embeddings">Tie Embeddings</label>
-            <select id="tieEmb">
-              <option value="true" data-t="yes">Yes</option>
-              <option value="false" data-t="no">No</option>
-            </select>
-          </div>
-           <div class="col-3"><label data-t="context_window">Context, tokens</label><input type="number" id="ctx" value="8192"></div>
+          <div class="col-3"><label data-t="ffn_multiplier">FFN Multiplier</label><input type="number" id="ffnMult" step="0.1"></div>
+          <div class="col-3"><label data-t="vocab_v">Vocabulary V</label><input type="number" id="vocab"></div>
+          <div class="col-3"><label data-t="tie_embeddings">Tie Embeddings</label><select id="tieEmb"><option value="true" data-t="yes">Yes</option><option value="false" data-t="no">No</option></select></div>
+          <div class="col-3"><label data-t="context_window">Context</label><input type="number" id="ctx"></div>
+        </div>
+
+        <div class="section-title" style="margin-top:18px" data-t="architecture_details">Architectural Details (Reference)</div>
+        <div class="row">
+            <div class="col-3"><label data-t="norm_type">Normalization</label><select id="norm"><option>RMSNorm</option><option>LayerNorm</option></select></div>
+            <div class="col-3"><label data-t="activation_fn">Activation Fn</label><select id="activation"><option>SwiGLU</option><option>GeGLU</option><option>GELU</option><option>SiLU</option></select></div>
+            <div class="col-3"><label data-t="mlp_structure">MLP Structure</label><select id="mlp"><option>GatedMLP</option><option>StandardMLP</option></select></div>
+            <div class="col-3"><label data-t="pos_embedding">Pos. Embedding</label><select id="pos_embedding"><option>RoPE</option><option>Alibi</option><option>Learned</option></select></div>
         </div>
 
         <div class="section-title" style="margin-top:18px" data-t="description_tech">Description & Technologies</div>
-        <div class="row">
-          <div class="col-12">
-            <div id="modelNotes" class="muted" data-t-placeholder="model_notes_placeholder">Brief description, attention mechanisms, RoPE, SWA, MoE, etc. will be shown here.</div>
-            <div id="modelLinks" class="help" style="margin-top:6px"></div>
-          </div>
-        </div>
+        <div id="modelNotes" class="muted" data-t-placeholder="model_notes_placeholder">...</div>
+        <div id="modelLinks" class="help" style="margin-top:6px"></div>
       </div>
 
       <!-- Right Column: Modes & Calculations -->
@@ -78,68 +75,28 @@
         <!-- TRAINING PANE -->
         <div id="pane-train">
           <div class="grid-2" style="margin-top:12px">
-            <div>
-              <label data-t="precision">Precision</label>
-              <select id="precisionTrain">
-                <option value="amp" selected data-t="precision_amp">AMP (BF16 weights + FP32 master)</option>
-                <option value="bf16" data-t="precision_bf16">BF16 or FP16</option>
-                <option value="fp32" data-t="precision_fp32">FP32</option>
-                <option value="q4lora" data-t="precision_qlora">QLoRA (4-bit base + LoRA)</option>
-              </select>
-            </div>
-            <div>
-              <label data-t="optimizer">Optimizer</label>
-              <select id="optimizer">
-                <option value="adamw" selected>AdamW</option>
-                <option value="sgdm" data-t="optimizer_sgdm">SGD with Momentum</option>
-                <option value="sgd">SGD</option>
-              </select>
-            </div>
+            <div><label data-t="precision">Precision</label><select id="precisionTrain"><option value="amp" selected data-t="precision_amp">AMP (BF16 + FP32 master)</option><option value="bf16" data-t="precision_bf16">BF16/FP16</option><option value="fp32" data-t="precision_fp32">FP32</option><option value="q4lora" data-t="precision_qlora">QLoRA (4-bit base)</option></select></div>
+            <div><label data-t="optimizer">Optimizer</label><select id="optimizer"><option value="adamw" selected>AdamW</option><option value="sgdm" data-t="optimizer_sgdm">SGD w/ Momentum</option></select></div>
           </div>
           <div class="grid-2">
             <div><label data-t="dp_gpus">Data Parallel GPUs</label><input type="number" id="dp" value="1" /></div>
-            <div><label>ZeRO Stage</label><select id="zero">
-                <option value="0" data-t="zero_0">0 (Off)</option>
-                <option value="1" data-t="zero_1">1 (Optimizer Sharding)</option>
-                <option value="2" data-t="zero_2">2 (+ Gradient Sharding)</option>
-                <option value="3" data-t="zero_3">3 (+ Weight Sharding)</option>
-            </select></div>
+            <div><label>ZeRO Stage</label><select id="zero"><option value="0" data-t="zero_0">0 (Off)</option><option value="1" data-t="zero_1">1 (Opt.)</option><option value="2" data-t="zero_2">2 (+Grad)</option><option value="3" data-t="zero_3">3 (+Weights)</option></select></div>
           </div>
           <div class="grid-2">
             <div><label data-t="seq_len_s">Sequence Length S</label><input type="number" id="seqTrain" value="4096" /></div>
             <div><label data-t="batch_per_gpu_b">Batch per GPU B</label><input type="number" id="mbsz" value="2" /></div>
           </div>
           <div class="grid-2">
-            <div><label>Gradient Checkpointing</label><select id="ckpt">
-                <option value="full" selected data-t="full">Full</option>
-                <option value="none" data-t="no">No</option>
-            </select></div>
-            <div><label>Flash Attention</label><select id="flash">
-                <option value="true" selected data-t="yes">Yes</option>
-                <option value="false" data-t="no">No</option>
-            </select></div>
-          </div>
-
-          <div class="section-title" style="margin-top:12px">LoRA</div>
-          <div class="grid-2">
-            <div><label data-t="enable_lora">Enable LoRA</label><select id="loraEnabled">
-                <option value="off" selected data-t="no">No</option>
-                <option value="on" data-t="yes">Yes</option>
-            </select></div>
-            <div><label data-t="lora_rank">Rank (r)</label><input type="number" id="loraR" value="16" /></div>
+            <div><label>Gradient Checkpointing</label><select id="ckpt"><option value="full" selected data-t="full">Full</option><option value="none" data-t="no">No</option></select></div>
+            <div><label>Flash Attention</label><select id="flash"><option value="true" selected data-t="yes">Yes</option><option value="false" data-t="no">No</option></select></div>
           </div>
         </div>
 
         <!-- INFERENCE PANE -->
         <div id="pane-infer" style="display:none">
           <div class="grid-2" style="margin-top:12px">
-            <div><label data-t="weight_quantization">Weight Quantization</label><select id="quant">
-                <option value="fp16">FP16</option><option value="bf16">BF16</option><option value="int8">INT8</option>
-                <option value="int4" selected>INT4</option><option value="int3">INT3</option><option value="int2">INT2</option>
-            </select></div>
-            <div><label data-t="kv_cache_quantization">KV Cache Quantization</label><select id="quantKV">
-                <option value="fp16" selected>FP16</option><option value="int8">INT8</option>
-            </select></div>
+            <div><label data-t="weight_quantization">Weight Quantization</label><select id="quant"><option value="fp16">FP16</option><option value="bf16">BF16</option><option value="int8">INT8</option><option value="int4" selected>INT4</option><option value="int3">INT3</option><option value="int2">INT2</option></select></div>
+            <div><label data-t="kv_cache_quantization">KV Cache Quantization</label><select id="quantKV"><option value="fp16" selected>FP16</option><option value="int8">INT8</option></select></div>
           </div>
           <div class="grid-2">
             <div><label data-t="context_window">Context, tokens</label><input type="number" id="seqInfer" value="8192" /></div>
@@ -153,18 +110,14 @@
           <div class="kpi"><div class="lbl" data-t="memory_per_gpu">Memory per GPU</div><div class="val" id="memPerGpu">0 GB</div></div>
         </div>
 
-        <div class="grid-2" style="margin-top:12px">
-          <div>
-            <div class="section-title" data-t="memory_breakdown">Memory Breakdown</div>
-            <table>
-              <tbody id="tableBody"></tbody>
-              <tfoot><tr><td><b data-t="total_with_overhead">Total (5% overhead)</b></td><td id="sumWithOv"><b>0.00 GB</b></td></tr></tfoot>
-            </table>
-          </div>
-          <div>
-            <div class="section-title" data-t="gpu_recommendations">GPU Recommendations</div>
-            <div id="gpu_recommendation" class="recommendation" data-t-placeholder="gpu_rec_placeholder">Will be populated automatically</div>
-          </div>
+        <div class="results-grid">
+            <div class="grid-span-2">
+                <div class="section-title" data-t="memory_breakdown">Memory Breakdown</div>
+                <table><tbody id="tableBody"></tbody></table>
+            </div>
+            <div class="grid-span-2">
+                <div id="gpu_recommendation" class="recommendation" data-t-placeholder="gpu_rec_placeholder">...</div>
+            </div>
         </div>
       </div>
     </div>
