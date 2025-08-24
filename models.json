@@ -4,14 +4,70 @@
     "name": "Llama 3.1",
     "license": "Meta Llama",
     "notes": {
-      "en": "Flagship dense models. Uses tiktoken tokenizer with a 128K vocabulary. GQA significantly saves KV cache memory.",
-      "ru": "Флагманские плотные модели. Использует токенайзер tiktoken со словарем 128K. GQA значительно экономит память KV кэша."
+      "en": "Flagship dense models. 128K tokenizer vocab. GQA reduces KV cache.",
+      "ru": "Флагманские плотные модели. Словарь токенайзера 128K. GQA снижает память KV кэша."
     },
-    "links": [{ "t": "Meta Blog", "href": "https://ai.meta.com/blog/meta-llama-3-1/" }],
+    "links": [
+      {
+        "t": "Meta Blog",
+        "href": "https://ai.meta.com/blog/meta-llama-3-1/"
+      }
+    ],
     "variants": [
-      { "id": "8b", "name": "8B", "params": 8e9, "layers": 32, "hidden": 4096, "heads": 32, "kvHeads": 8, "ffnMult": 3.5, "vocab": 128256, "tieEmb": false, "ctx": 131072, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" },
-      { "id": "70b", "name": "70B", "params": 70e9, "layers": 80, "hidden": 8192, "heads": 64, "kvHeads": 8, "ffnMult": 3.0, "vocab": 128256, "tieEmb": false, "ctx": 131072, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" },
-      { "id": "405b", "name": "405B", "params": 405e9, "layers": 128, "hidden": 16384, "heads": 128, "kvHeads": 16, "ffnMult": 2.6, "vocab": 128256, "tieEmb": false, "ctx": 131072, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" }
+      {
+        "id": "8b",
+        "name": "8B",
+        "params": 8030000000.0,
+        "layers": 32,
+        "hidden": 4096,
+        "heads": 32,
+        "kvHeads": 8,
+        "ffnMult": 3.5,
+        "vocab": 128256,
+        "tieEmb": false,
+        "ctx": 131072,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      },
+      {
+        "id": "70b",
+        "name": "70B",
+        "params": 70600000000.0,
+        "layers": 80,
+        "hidden": 8192,
+        "heads": 64,
+        "kvHeads": 8,
+        "ffnMult": 3.0,
+        "vocab": 128256,
+        "tieEmb": false,
+        "ctx": 131072,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      },
+      {
+        "id": "405b",
+        "name": "405B",
+        "params": 405000000000.0,
+        "layers": 126,
+        "hidden": 16384,
+        "heads": 128,
+        "kvHeads": 8,
+        "ffnMult": 3.25,
+        "vocab": 128256,
+        "tieEmb": false,
+        "ctx": 131072,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      }
     ]
   },
   {
@@ -19,14 +75,79 @@
     "name": "Qwen",
     "license": "Qianwen",
     "notes": {
-        "en": "Strong multilingual capabilities and long context support. Uses GQA with specified KV heads.",
-        "ru": "Высокие мультиязычные способности и поддержка длинных контекстов. Использует GQA."
+      "en": "Strong multilingual capabilities and long context support. Uses GQA.",
+      "ru": "Высокие мультиязычные способности и поддержка длинных контекстов. Использует GQA."
     },
-    "links": [{ "t": "Qwen2 Blog", "href": "https://qwenlm.github.io/blog/qwen2/" }, { "t": "Qwen 3 Info", "href": "https://www.ithome.com/0/781/711.htm" }],
+    "links": [
+      {
+        "t": "Qwen2 Blog",
+        "href": "https://qwenlm.github.io/blog/qwen2/"
+      },
+      {
+        "t": "Qwen 3 Info",
+        "href": "https://zhuanlan.zhihu.com/p/711329623"
+      }
+    ],
     "variants": [
-      { "id": "qwen2-7b", "name": "Qwen 2 7B", "params": 7.6e9, "layers": 28, "hidden": 3584, "heads": 28, "kvHeads": 4, "ffnMult": 3.5, "vocab": 152064, "tieEmb": true, "ctx": 131072, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" },
-      { "id": "qwen2-72b", "name": "Qwen 2 72B", "params": 72.7e9, "layers": 80, "hidden": 8192, "heads": 64, "kvHeads": 8, "ffnMult": 3.0, "vocab": 152064, "tieEmb": true, "ctx": 131072, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" },
-      { "id": "qwen3-235b", "name": "Qwen 3 235B", "params": 235e9, "layers": 52, "hidden": 5120, "heads": 40, "kvHeads": 8, "ffnMult": 3.5, "vocab": 152064, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": "hybrid", "topK": "N/A" }, "notes": { "en": "22B active params. Hybrid 'Thinking' and 'Non-Thinking' modes. Core architecture params are estimated based on active size.", "ru": "22B активных параметров. Гибридный режим 'Thinking' и 'Non-Thinking'. Параметры архитектуры оценены по размеру активной части." } }
+      {
+        "id": "qwen2-7b",
+        "name": "Qwen 2 7B",
+        "params": 7600000000.0,
+        "layers": 28,
+        "hidden": 3584,
+        "heads": 28,
+        "kvHeads": 4,
+        "ffnMult": 3.5,
+        "vocab": 152064,
+        "tieEmb": true,
+        "ctx": 131072,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      },
+      {
+        "id": "qwen2-72b",
+        "name": "Qwen 2 72B",
+        "params": 72700000000.0,
+        "layers": 80,
+        "hidden": 8192,
+        "heads": 64,
+        "kvHeads": 8,
+        "ffnMult": 3.0,
+        "vocab": 152064,
+        "tieEmb": true,
+        "ctx": 131072,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      },
+      {
+        "id": "qwen3-235b",
+        "name": "Qwen 3 235B",
+        "params": 235000000000.0,
+        "activeParams": 22000000000.0,
+        "layers": 94,
+        "hidden": 8192,
+        "heads": 64,
+        "kvHeads": 16,
+        "ffnMult": 3.5,
+        "vocab": 152064,
+        "tieEmb": true,
+        "ctx": 128000,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA",
+        "moe": {
+          "experts_total": 128,
+          "topK": 8
+        }
+      }
     ]
   },
   {
@@ -34,13 +155,52 @@
     "name": "Gemma 2",
     "license": "Gemma",
     "notes": {
-        "en": "Google's family of lightweight, state-of-the-art open models. Uses GQA and GeGLU activation.",
-        "ru": "Семейство легковесных и современных открытых моделей от Google. Использует GQA и GeGLU активацию."
+      "en": "Google open models with GQA and GeGLU activation.",
+      "ru": "Открытые модели Google с GQA и GeGLU."
     },
-    "links": [{ "t": "Google Blog", "href": "https://blog.google/technology/developers/google-gemma-2/" }],
+    "links": [
+      {
+        "t": "Google Blog",
+        "href": "https://blog.google/technology/developers/google-gemma-2/"
+      }
+    ],
     "variants": [
-      { "id": "9b", "name": "9B", "params": 9e9, "layers": 42, "hidden": 3584, "heads": 28, "kvHeads": 4, "ffnMult": 3.0, "vocab": 256000, "tieEmb": true, "ctx": 8192, "norm": "RMSNorm", "activation": "GeGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" },
-      { "id": "27b", "name": "27B", "params": 27e9, "layers": 52, "hidden": 5120, "heads": 40, "kvHeads": 8, "ffnMult": 3.0, "vocab": 256000, "tieEmb": true, "ctx": 8192, "norm": "RMSNorm", "activation": "GeGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA" }
+      {
+        "id": "9b",
+        "name": "9B",
+        "params": 9000000000.0,
+        "layers": 42,
+        "hidden": 3584,
+        "heads": 16,
+        "kvHeads": 8,
+        "ffnMult": 4.0,
+        "vocab": 256000,
+        "tieEmb": true,
+        "ctx": 8192,
+        "norm": "RMSNorm",
+        "activation": "GeGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      },
+      {
+        "id": "27b",
+        "name": "27B",
+        "params": 27000000000.0,
+        "layers": 46,
+        "hidden": 4608,
+        "heads": 32,
+        "kvHeads": 16,
+        "ffnMult": 8.0,
+        "vocab": 256000,
+        "tieEmb": true,
+        "ctx": 8192,
+        "norm": "RMSNorm",
+        "activation": "GeGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA"
+      }
     ]
   },
   {
@@ -48,13 +208,66 @@
     "name": "Mixtral",
     "license": "Apache 2.0",
     "notes": {
-        "en": "Pioneering sparse Mixture-of-Experts (MoE) models, known for high efficiency and speed.",
-        "ru": "Передовые спарсные модели Mixture-of-Experts (MoE), известные высокой эффективностью и скоростью."
+      "en": "Sparse Mixture-of-Experts models that activate top-K of total experts per MLP.",
+      "ru": "Спарсные MoE модели, активируют top-K из всех экспертов в каждом MLP."
     },
-    "links": [{ "t": "Mistral AI", "href": "https://mistral.ai/news/mixtral-of-experts" }],
+    "links": [
+      {
+        "t": "Mistral 8x7B",
+        "href": "https://mistral.ai/news/mixtral-of-experts"
+      },
+      {
+        "t": "Mistral 8x22B",
+        "href": "https://mistral.ai/news/mixtral-8x22b"
+      }
+    ],
     "variants": [
-      { "id": "8x7b", "name": "8x7B", "params": 46.7e9, "layers": 32, "hidden": 4096, "heads": 32, "kvHeads": 8, "ffnMult": 2.66, "vocab": 32000, "tieEmb": true, "ctx": 32768, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": 8, "topK": 2 }, "notes": { "en": "13B active params.", "ru": "13B активных параметров." } },
-      { "id": "8x22b", "name": "8x22B", "params": 141e9, "layers": 56, "hidden": 6144, "heads": 48, "kvHeads": 8, "ffnMult": 2.66, "vocab": 32000, "tieEmb": true, "ctx": 65536, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": 8, "topK": 2 }, "notes": { "en": "39B active params.", "ru": "39B активных параметров." } }
+      {
+        "id": "8x7b",
+        "name": "8x7B",
+        "params": 46700000000.0,
+        "activeParams": 12900000000.0,
+        "layers": 32,
+        "hidden": 4096,
+        "heads": 32,
+        "kvHeads": 8,
+        "ffnMult": 2.66,
+        "vocab": 32000,
+        "tieEmb": true,
+        "ctx": 32768,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA",
+        "moe": {
+          "experts_total": 8,
+          "topK": 2
+        }
+      },
+      {
+        "id": "8x22b",
+        "name": "8x22B",
+        "params": 141000000000.0,
+        "activeParams": 39000000000.0,
+        "layers": 56,
+        "hidden": 6144,
+        "heads": 48,
+        "kvHeads": 8,
+        "ffnMult": 2.66,
+        "vocab": 32000,
+        "tieEmb": true,
+        "ctx": 65536,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA",
+        "moe": {
+          "experts_total": 8,
+          "topK": 2
+        }
+      }
     ]
   },
   {
@@ -62,13 +275,71 @@
     "name": "DeepSeek",
     "license": "DeepSeek/MIT",
     "notes": {
-        "en": "Advanced MoE models with a focus on reasoning, math, and coding.",
-        "ru": "Продвинутые MoE модели с фокусом на логике, математике и кодинге."
+      "en": "MoE models with MLA attention. Use provided total and active parameters for accuracy.",
+      "ru": "MoE модели с MLA. Для точности используем заданные total и active параметры."
     },
-    "links": [{ "t": "DeepSeek AI", "href": "https://www.deepseek.com/" }],
+    "links": [
+      {
+        "t": "DeepSeek V2 Paper",
+        "href": "https://arxiv.org/abs/2405.04434"
+      }
+    ],
     "variants": [
-      { "id": "v2-236b", "name": "V2 236B", "params": 236e9, "layers": 64, "hidden": 5120, "heads": 128, "kvHeads": 128, "ffnMult": 6, "vocab": 102400, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "MLA", "kvDimPerHead": 16, "moe": { "experts": 64, "topK": 2 }, "notes": { "en": "21B active params. Features Multi-head Latent Attention (MLA).", "ru": "21B активных параметров. Использует Multi-head Latent Attention (MLA)." } },
-      { "id": "r1-671b", "name": "R1 671B", "params": 671e9, "layers": 56, "hidden": 6144, "heads": 48, "kvHeads": 8, "ffnMult": 4, "vocab": 128000, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": 128, "topK": "N/A" }, "notes": { "en": "37B active params. Focus on step-by-step reasoning. Core architecture params are estimated.", "ru": "37B активных параметров. Фокус на пошаговой логике. Параметры архитектуры оценены." } }
+      {
+        "id": "v2-236b",
+        "name": "V2 236B",
+        "params": 236000000000.0,
+        "activeParams": 21000000000.0,
+        "layers": 60,
+        "hidden": 5120,
+        "heads": 128,
+        "kvHeads": 0,
+        "ffnMult": 3.0,
+        "vocab": 100000,
+        "tieEmb": true,
+        "ctx": 128000,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "MLA",
+        "kvDimMLA": 512,
+        "mlaRopeKV": 64,
+        "moe": {
+          "experts_total": 162,
+          "shared": 2,
+          "topK": 6
+        }
+      },
+      {
+        "id": "r1-671b",
+        "name": "R1 671B",
+        "params": 671000000000.0,
+        "activeParams": 37000000000.0,
+        "layers": null,
+        "hidden": null,
+        "heads": null,
+        "kvHeads": null,
+        "ffnMult": null,
+        "vocab": 128000,
+        "tieEmb": true,
+        "ctx": 128000,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "MLA",
+        "moe": {
+          "experts_total": 257,
+          "shared": 1,
+          "topK": 8
+        },
+        "paramsOnly": true,
+        "notes": {
+          "en": "Public docs give total and active params plus expert counts. Architecture details such as layers and hidden size are not public, so the calculator will use the provided param counts.",
+          "ru": "Публичные источники дают общий и активный размер, а также число экспертов. Детали архитектуры не раскрыты, калькулятор будет использовать заданные параметры."
+        }
+      }
     ]
   },
   {
@@ -76,12 +347,45 @@
     "name": "Kimi K2",
     "license": "MIT",
     "notes": {
-        "en": "Trillion-parameter MoE model specialized for tool use, agentic tasks, and coding.",
-        "ru": "MoE модель на триллион параметров, специализированная на использовании инструментов, агентных задачах и кодинге."
+      "en": "Trillion-parameter MoE focused on tools, agents, and coding.",
+      "ru": "Триллионная MoE модель, фокус на инструментах, агентах и кодинге."
     },
-    "links": [],
+    "links": [
+      {
+        "t": "Kimi K2 Model Card",
+        "href": "https://huggingface.co/moonshotai/Kimi-K2-Instruct"
+      }
+    ],
     "variants": [
-      { "id": "1t", "name": "1T", "params": 1e12, "layers": 60, "hidden": 8192, "heads": 64, "kvHeads": 8, "ffnMult": 4, "vocab": 128000, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "GeGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "MLA", "moe": { "experts": 384, "topK": 8 }, "notes": { "en": "32B active params. Core architecture params are estimated based on active size.", "ru": "32B активных параметров. Параметры архитектуры оценены по размеру активной части." } }
+      {
+        "id": "1t",
+        "name": "1T",
+        "params": 1000000000000.0,
+        "activeParams": 32000000000.0,
+        "layers": null,
+        "hidden": null,
+        "heads": 64,
+        "kvHeads": null,
+        "ffnMult": null,
+        "vocab": 128000,
+        "tieEmb": true,
+        "ctx": 128000,
+        "norm": "RMSNorm",
+        "activation": "GeGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "MLA",
+        "moe": {
+          "experts_total": 384,
+          "shared": 1,
+          "topK": 8
+        },
+        "paramsOnly": true,
+        "notes": {
+          "en": "Public docs specify 1T total and 32B active parameters, 384 experts with top-8 routing plus one shared expert.",
+          "ru": "По публичным данным 1T total и 32B active, 384 эксперта с top-8 и один общий эксперт."
+        }
+      }
     ]
   },
   {
@@ -89,27 +393,64 @@
     "name": "GPT-OSS",
     "license": "Apache 2.0",
     "notes": {
-        "en": "OpenAI's open models optimized for reasoning, tool use, and private deployment.",
-        "ru": "Открытые модели от OpenAI, оптимизированные для логики, инструментов и приватного развертывания."
+      "en": "OpenAI open-weight MoE models optimized for reasoning and tool use.",
+      "ru": "Открытые веса от OpenAI, MoE, оптимизированы под логику и инструменты."
     },
-    "links": [],
+    "links": [
+      {
+        "t": "Intro post",
+        "href": "https://openai.com/index/introducing-gpt-oss/"
+      }
+    ],
     "variants": [
-      { "id": "21b", "name": "21B", "params": 21e9, "layers": 24, "hidden": 3072, "heads": 32, "kvHeads": 8, "ffnMult": 4, "vocab": 128000, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": "N/A", "topK": "N/A" }, "notes": { "en": "3.6B active params. Core architecture params are estimated.", "ru": "3.6B активных параметров. Параметры архитектуры оценены." } },
-      { "id": "117b", "name": "117B", "params": 117e9, "layers": 32, "hidden": 4096, "heads": 32, "kvHeads": 8, "ffnMult": 4, "vocab": 128000, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": "N/A", "topK": "N/A" }, "notes": { "en": "5.1B active params. Core architecture params are estimated.", "ru": "5.1B активных параметров. Параметры архитектуры оценены." } }
-    ]
-  },
-  {
-    "id": "pythia",
-    "name": "Pythia (GPT-OSS)",
-    "license": "Apache 2.0",
-    "notes": {
-        "en": "A suite of models trained on public data, designed for research on LLM development. Classic GPT-NeoX architecture.",
-        "ru": "Набор моделей, обученных на публичных данных для исследования разработки LLM. Классическая архитектура GPT-NeoX."
-    },
-    "links": [{ "t": "EleutherAI", "href": "https://github.com/EleutherAI/pythia" }],
-    "variants": [
-      { "id": "6.9b", "name": "6.9B", "params": 6.9e9, "layers": 32, "hidden": 4096, "heads": 32, "kvHeads": 32, "ffnMult": 4, "vocab": 50304, "tieEmb": true, "ctx": 2048, "norm": "LayerNorm", "activation": "GELU", "mlp": "StandardMLP", "pos_embedding": "RoPE", "attention": "MHA" },
-      { "id": "12b", "name": "12B", "params": 12e9, "layers": 36, "hidden": 5120, "heads": 40, "kvHeads": 40, "ffnMult": 4, "vocab": 50304, "tieEmb": true, "ctx": 2048, "norm": "LayerNorm", "activation": "GELU", "mlp": "StandardMLP", "pos_embedding": "RoPE", "attention": "MHA" }
+      {
+        "id": "21b",
+        "name": "20B",
+        "params": 21000000000.0,
+        "activeParams": 3600000000.0,
+        "layers": 24,
+        "hidden": null,
+        "heads": null,
+        "kvHeads": null,
+        "ffnMult": null,
+        "vocab": 128000,
+        "tieEmb": true,
+        "ctx": 128000,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA",
+        "moe": {
+          "experts_total": 32,
+          "topK": 4
+        },
+        "paramsOnly": true
+      },
+      {
+        "id": "117b",
+        "name": "120B",
+        "params": 117000000000.0,
+        "activeParams": 5100000000.0,
+        "layers": 36,
+        "hidden": null,
+        "heads": null,
+        "kvHeads": null,
+        "ffnMult": null,
+        "vocab": 128000,
+        "tieEmb": true,
+        "ctx": 128000,
+        "norm": "RMSNorm",
+        "activation": "SwiGLU",
+        "mlp": "GatedMLP",
+        "pos_embedding": "RoPE",
+        "attention": "GQA",
+        "moe": {
+          "experts_total": 128,
+          "topK": 4
+        },
+        "paramsOnly": true
+      }
     ]
   }
 ]

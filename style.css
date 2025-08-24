@@ -67,13 +67,30 @@ h1 { color: var(--primary-color); font-size: 2.2em; margin: 0; }
 .row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 12px; margin-bottom: 12px; }
 .col-12{ grid-column: span 12; } .col-6{ grid-column: span 6; } .col-4{ grid-column: span 4; } .col-3{ grid-column: span 3; }
 
+.variant-container { position: relative; }
+.reset-btn {
+    position: absolute;
+    right: 6px;
+    top: 29px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.reset-btn:hover { opacity: 1; }
+
 label { font-weight: 600; color: var(--muted-text); font-size: 13px; margin-bottom: 6px; display: block; }
 input, select {
   width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 15px;
   transition: border-color .2s, box-shadow .2s; background: var(--input-bg); color: var(--text-color);
 }
 input:focus, select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.3); }
-input:read-only { background-color: var(--tab-bg); color: var(--muted-text); }
+input:read-only { background-color: var(--tab-bg); color: var(--muted-text); cursor: not-allowed; }
 #local-file-loader { margin-bottom: 16px; padding: 12px; border: 1px dashed var(--border-color); border-radius: 8px; }
 .muted { color: var(--muted-text); font-size: 13px; }
 .help a { color: var(--primary-color); text-decoration: none; } .help a:hover { text-decoration: underline; }
@@ -82,6 +99,7 @@ input:read-only { background-color: var(--tab-bg); color: var(--muted-text); }
 .kpi { background: var(--kpi-bg); border-radius: 14px; padding: 14px; text-align: center; border: 1px solid var(--border-color); }
 .kpi .lbl { color: var(--muted-text); font-size: 12px; margin-bottom: 6px; }
 .kpi .val { font-weight: 800; font-size: 1.5em; color: var(--primary-color); }
+.kpi .val .active-params { font-size: 0.6em; color: var(--muted-text); }
 
 .tabs { display: flex; gap: 8px; background: var(--tab-bg); border-radius: 10px; padding: 6px; margin-top: 6px; }
 .tab-btn { flex: 1 1 0; text-align: center; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--muted-text); background: transparent; border: none; }

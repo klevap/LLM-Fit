@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
             page_title: "LLM Fit: GPU Memory Calculator",
             main_header: "🧩 LLM Fit",
             subtitle: "Your LLM-to-GPU Sizing Tool",
+            share: "🔗 Share",
+            copied: "✅ Copied!",
+            reset: "Reset",
+            custom_model: "(Custom)",
             load_models_manually: "Running locally. Load models.json manually:",
             model_catalog: "Model Catalog",
             family: "Family",
@@ -36,6 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
             page_title: "LLM Fit: Калькулятор памяти GPU",
             main_header: "🧩 LLM Fit",
             subtitle: "Ваш инструмент подбора GPU для LLM",
+            share: "🔗 Поделиться",
+            copied: "✅ Скопировано!",
+            reset: "Сброс",
+            custom_model: "(Custom)",
             load_models_manually: "Локальный запуск. Загрузите models.json вручную:",
             model_catalog: "Каталог моделей",
             family: "Семейство", variant: "Вариант",
@@ -66,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- STATE & DOM ---
     let MODELS = [];
+    let originalVariantState = {};
     let currentLang = 'en';
     let currentTheme = 'dark';
     const $ = s => document.querySelector(s);
@@ -86,6 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
         langButtons: { en: $('#lang-en'), ru: $('#lang-ru') },
         localFileLoader: $('#local-file-loader'),
         modelFileInput: $('#model-file-input'),
+        shareBtn: $('#share-btn'),
+        resetBtn: $('#reset-btn'),
     };
 
     // --- HELPERS ---
@@ -153,18 +164,29 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.themeToggle.addEventListener('click', toggleTheme);
         dom.family.addEventListener('change', () => { updateVariants(); applyVariant(); calculate(); saveStateToHash(); });
         dom.variant.addEventListener('change', () => { applyVariant(); calculate(); saveStateToHash(); });
+        
         $$('input, select').forEach(el => {
-            el.addEventListener('change', () => { calculate(); saveStateToHash(); });
-            el.addEventListener('input', () => { if (el.type === 'number' || el.type === 'text') calculate(); });
+            const handler = () => {
+                calculate();
+                checkIfModified();
+            };
+            el.addEventListener('change', handler);
+            el.addEventListener('input', () => { if (el.type === 'number' || el.type === 'text') handler(); });
         });
+
         Object.values(dom.tabs).forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
         window.addEventListener('hashchange', loadStateFromHash);
+        dom.shareBtn.addEventListener('click', shareState);
+        dom.resetBtn.addEventListener('click', () => { applyVariant(); calculate(); saveStateToHash(); });
     }
 
     // --- THEME & LANGUAGE ---
     function applyTranslations() {
         document.documentElement.lang = currentLang;
-        $$('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+        $$('[data-t]').forEach(el => {
+            const key = el.dataset.t;
+            if (key) el.textContent = t(key);
+        });
         $$('[data-t-placeholder]').forEach(el => el.placeholder = t(el.dataset.tPlaceholder));
         if (MODELS.length > 0) {
             populateFamilies();
@@ -229,32 +251,58 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyVariant() {
         const v = getVariant();
         if (!v) return;
-        Object.keys(v).forEach(key => {
-            if (dom[key] && (dom[key] instanceof HTMLElement)) {
-                 dom[key].value = v[key];
+        
+        const fieldsToUpdate = ['layers', 'hidden', 'heads', 'kvHeads', 'ffnMult', 'vocab', 'tieEmb', 'ctx', 'norm', 'activation', 'mlp', 'pos_embedding'];
+        fieldsToUpdate.forEach(key => {
+            if (dom[key] && v[key] !== undefined && v[key] !== null) {
+                dom[key].value = v[key];
             }
         });
-        
+
         if (v.moe) {
-            dom.moeDetailsRow.style.display = 'grid';
-            dom.moeExperts.value = v.moe.experts;
-            dom.moeActiveExperts.value = v.moe.topK;
-            dom.moeExperts.readOnly = true;
-            dom.moeActiveExperts.readOnly = true;
+            dom.moeExperts.value = v.moe.experts_total || v.moe.experts || '';
+            const active = (v.moe.shared || 0) + (v.moe.topK || 0);
+            dom.moeActiveExperts.value = active > 0 ? active : '';
         } else {
-            dom.moeDetailsRow.style.display = 'none';
             dom.moeExperts.value = '';
             dom.moeActiveExperts.value = '';
-            dom.moeExperts.readOnly = false;
-            dom.moeActiveExperts.readOnly = false;
         }
+
+        const readOnlyFields = ['layers', 'hidden', 'heads', 'kvHeads', 'ffnMult', 'vocab'];
+        readOnlyFields.forEach(key => dom[key].readOnly = !!v.paramsOnly);
 
         let notes = v.notes?.[currentLang] || getFamily().notes?.[currentLang] || '';
         if (v.moe && !notes.includes('Mixture-of-Experts')) {
-            notes += ' ' + t('moe_info').replace('{experts}', v.moe.experts).replace('{topK}', v.moe.topK);
+            notes += ' ' + t('moe_info').replace('{experts}', v.moe.experts_total || v.moe.experts).replace('{topK}', v.moe.topK);
         }
         dom.modelNotes.textContent = notes;
         dom.modelLinks.innerHTML = getFamily().links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
+        
+        originalVariantState = collectState();
+        checkIfModified();
+    }
+
+    function checkIfModified() {
+        const currentState = collectState();
+        let isModified = false;
+        for (const key in originalVariantState) {
+            if (key in currentState && String(currentState[key]) !== String(originalVariantState[key])) {
+                isModified = true;
+                break;
+            }
+        }
+        
+        const option = dom.variant.options[dom.variant.selectedIndex];
+        if (isModified) {
+            if (!option.text.includes(t('custom_model'))) {
+                option.text += ` ${t('custom_model')}`;
+            }
+            dom.resetBtn.style.display = 'block';
+        } else {
+            const v = getVariant();
+            if (v) option.text = v.name;
+            dom.resetBtn.style.display = 'none';
+        }
     }
 
     function switchTab(tab) {
@@ -286,9 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom[key].value = s[key];
             }
         }
-        if (s.moeExperts || s.moeActiveExperts) {
-            dom.moeDetailsRow.style.display = 'grid';
-        }
         if (MODELS.length > 0) {
             updateVariants();
             applyVariant();
@@ -313,6 +358,22 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (e) { console.error("Failed to load state from hash:", e); }
         }
     }
+    
+    async function copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+
+    function shareState() {
+        saveStateToHash();
+        copyToClipboard(window.location.href);
+        const originalText = dom.shareBtn.textContent;
+        dom.shareBtn.textContent = t('copied');
+        setTimeout(() => { dom.shareBtn.textContent = originalText; }, 1500);
+    }
 
     // --- CALCULATIONS ---
     function bytesOf(dtype) {
@@ -320,41 +381,39 @@ document.addEventListener('DOMContentLoaded', () => {
         return map[dtype] || 2;
     }
 
-    function calcParams(s) {
-        const v = getVariant(); // Получаем текущий выбранный вариант модели
-        const { layers: L, hidden: H, heads: A, kvHeads: Ak, ffnMult: fm, vocab: V, tieEmb } = s;
-        
+    function calculateParameters(s) {
+        const v = getVariant();
+        const isModified = dom.resetBtn.style.display === 'block';
+
+        if (v && v.paramsOnly && !isModified) {
+            const total = typeof v.params === 'number' ? v.params : 0;
+            const active = typeof v.activeParams === 'number' ? v.activeParams : total;
+            return { total, active };
+        }
+
+        const { layers: L, hidden: H, heads: A, kvHeads: Ak, ffnMult: fm, vocab: V, tieEmb, mlp, moeExperts, moeActiveExperts } = s;
+        if (!L || !H || !A) return { total: 0, active: 0 };
+
         const kvRatio = Math.max(1, Ak) / Math.max(1, A);
         const attn = L * (H * H * (2 + 2 * kvRatio));
         const emb = V * H;
-        const lmHead = tieEmb === 'true' ? 0 : V * H;
-        
-        const baseFfnPerLayer = (s.mlp === 'GatedMLP' ? 3 : 2) * fm * H * H;
-        let ffn;
+        const lmHead = (tieEmb === 'true' || tieEmb === true) ? 0 : V * H;
+        const baseFfnPerLayer = (mlp === 'GatedMLP' ? 3 : 2) * fm * H * H;
 
-        if (v && v.moe) {
-            const E = Number(v.moe.experts);
-            if (Number.isFinite(E) && E > 1) {
-                // Классический MoE: параметры MLP умножаются на число экспертов
-                ffn = L * E * baseFfnPerLayer;
-            } else if (typeof v.params === 'number') {
-                // Для гибридных MoE или где число экспертов не указано,
-                // вычисляем FFN как остаток от общего числа параметров
-                const variantHead = v.tieEmb ? 0 : V * H;
-                ffn = Math.max(0, v.params - attn - emb - variantHead);
-            } else {
-                ffn = L * baseFfnPerLayer; // Fallback для плотной модели
-            }
-        } else {
-            ffn = L * baseFfnPerLayer;
-        }
+        const E_total = Number(moeExperts) || 1;
+        const E_active = Number(moeActiveExperts) || E_total;
 
-        return attn + ffn + emb + lmHead;
+        const ffn_total = L * E_total * baseFfnPerLayer;
+        const ffn_active = L * E_active * baseFfnPerLayer;
+
+        const total = attn + ffn_total + emb + lmHead;
+        const active = attn + ffn_active + emb + lmHead;
+        return { total, active };
     }
 
     function calcTrainingMemory(s) {
         const table = [];
-        const totalParams = calcParams(s);
+        const { total: totalParams, active: activeParams } = calculateParameters(s);
         let weightBytes = bytesOf(s.precisionTrain), gradBytes = 2, actBytes = 2, masterBytes = 0, optBytes = 4, optStates = 0;
         if (s.precisionTrain === 'fp32') { gradBytes = 4; actBytes = 4; }
         if (s.precisionTrain === 'amp') { masterBytes = 4; }
@@ -366,14 +425,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const mem = {};
         
         if (s.precisionTrain === 'q4lora') {
-            // Специальная логика для QLoRA
-            mem.weights = totalParams * bytesOf('int4') * partW; // Базовая модель в 4 битах
-            // Градиенты и состояния оптимизатора только для LoRA-адаптеров.
-            // Так как их размер неизвестен, принимаем за 0 для нижней оценки.
-            mem.grads = 0;
-            mem.optim = 0;
-            // Мастер-веса не используются
-            mem.masterWeights = 0;
+            mem.weights = totalParams * bytesOf('int4') * partW;
+            mem.grads = 0; mem.optim = 0; mem.masterWeights = 0;
         } else {
             mem.weights = totalParams * weightBytes * partW;
             if (masterBytes > 0) mem.masterWeights = totalParams * masterBytes * (zero >= 1 ? 1 / D : 1);
@@ -398,24 +451,22 @@ document.addEventListener('DOMContentLoaded', () => {
         table.push([t('mem_per_sequence'), fmtMB(toMB(perSeqActivations))]);
 
         const totalBytes = Object.values(mem).reduce((a, b) => a + (b || 0), 0);
-        return { totalParams, table, totalGB: toGB(totalBytes * 1.05) };
+        return { totalParams, activeParams, table, totalGB: toGB(totalBytes * 1.05) };
     }
     
     function getKvCacheBytes(s) {
         const v = getVariant();
-        const headDim = s.hidden / s.heads;
-        let kvDim = headDim;
-
-        if (v && v.attention === 'MLA' && typeof v.kvDimPerHead === 'number') {
-            kvDim = v.kvDimPerHead; // Используем меньшую размерность для MLA
+        if (v && v.attention === 'MLA' && (v.kvDimMLA || v.mlaRopeKV)) {
+            const elemsPerTokenPerLayer = Number(v.kvDimMLA || 0) + s.heads * Number(v.mlaRopeKV || 0);
+            return s.layers * elemsPerTokenPerLayer * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
         }
-        
-        return 2 * s.layers * s.kvHeads * kvDim * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
+        const headDim = s.hidden / s.heads;
+        return 2 * s.layers * s.kvHeads * headDim * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
     }
 
     function calcInferenceMemory(s) {
         const table = [];
-        const totalParams = calcParams(s);
+        const { total: totalParams, active: activeParams } = calculateParameters(s);
         const mem = {};
         mem.weights = totalParams * bytesOf(s.quant);
         mem.kvCache = getKvCacheBytes(s);
@@ -428,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
         table.push([t('buffers'), fmtGB(toGB(mem.buffers))]);
 
         const totalBytes = Object.values(mem).reduce((a, b) => a + b, 0);
-        return { totalParams, table, totalGB: toGB(totalBytes * 1.05) };
+        return { totalParams, activeParams, table, totalGB: toGB(totalBytes * 1.05) };
     }
 
     function calculate() {
@@ -437,7 +488,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const mode = document.querySelector('.tab-btn.active').dataset.tab;
         const result = mode === 'train' ? calcTrainingMemory(s) : calcInferenceMemory(s);
 
-        dom.paramsTotal.textContent = `${(result.totalParams / 1e9).toFixed(2)}B`;
+        const totalB = (result.totalParams / 1e9).toFixed(2);
+        const activeB = (result.activeParams / 1e9).toFixed(2);
+        
+        if (totalB === activeB) {
+            dom.paramsTotal.innerHTML = `${totalB}B`;
+        } else {
+            dom.paramsTotal.innerHTML = `${totalB}B <span class="active-params">(${activeB}B active)</span>`;
+        }
+
         dom.memPerGpu.textContent = fmtGB(result.totalGB);
         dom.tableBody.innerHTML = result.table.map(([name, val]) => `<tr><td>${name}</td><td>${val}</td></tr>`).join('');
 
