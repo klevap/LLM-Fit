@@ -8,13 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
             share: "🔗 Share",
             copied: "✅ Copied!",
             reset: "Reset",
-            unlock: "Unlock",
             custom_model: "(Custom)",
             is_moe_model: "Mixture-of-Experts (MoE) Model",
-            load_models_manually: "Running locally. Load models.json manually:",
-            model_catalog: "Model Catalog",
-            family: "Family",
-            variant: "Variant",
+            load_models_manually: "Running locally. Load models/index.json manually:",
+            model_select: "Model",
             architecture: "Core Architecture",
             architecture_details: "Architectural Details (Reference)",
             layers_l: "Layers L", hidden_h: "Hidden H", heads_a: "Heads A", kv_heads: "KV Heads", ffn_multiplier: "FFN Multiplier", vocab_v: "Vocabulary V", tie_embeddings: "Tie Embeddings", context_window: "Context",
@@ -45,12 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             share: "🔗 Поделиться",
             copied: "✅ Скопировано!",
             reset: "Сброс",
-            unlock: "Изменить",
             custom_model: "(Custom)",
             is_moe_model: "Модель Mixture-of-Experts (MoE)",
-            load_models_manually: "Локальный запуск. Загрузите models.json вручную:",
-            model_catalog: "Каталог моделей",
-            family: "Семейство", variant: "Вариант",
+            load_models_manually: "Локальный запуск. Загрузите models/index.json вручную:",
+            model_select: "Модель",
             architecture: "Базовая архитектура",
             architecture_details: "Детали архитектуры (справочно)",
             layers_l: "Слои L", hidden_h: "Скрытое H", heads_a: "Головы A", kv_heads: "KV головы", ffn_multiplier: "FFN множитель", vocab_v: "Словарь V", tie_embeddings: "Связать эмбеддинги", context_window: "Контекст",
@@ -77,15 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- STATE & DOM ---
-    let MODELS = [];
-    let originalVariantState = {};
+    let MODELS = {};
+    let originalModelState = {};
     let currentLang = 'en';
     let currentTheme = 'dark';
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
 
     const dom = {
-        family: $('#family'), variant: $('#variant'),
+        modelSelect: $('#model-select'),
         layers: $('#layers'), hidden: $('#hidden'), heads: $('#heads'), kvHeads: $('#kvHeads'), ffnMult: $('#ffnMult'), vocab: $('#vocab'), tieEmb: $('#tieEmb'), ctx: $('#ctx'),
         isMoE: $('#isMoE'),
         moeDetailsRow: $('#moe-details-row'), moeExperts: $('#moeExperts'), moeActiveExperts: $('#moeActiveExperts'),
@@ -101,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localFileLoader: $('#local-file-loader'),
         modelFileInput: $('#model-file-input'),
         shareBtn: $('#share-btn'),
-        modifyBtn: $('#modify-btn'),
+        resetBtn: $('#reset-btn'),
     };
 
     // --- HELPERS ---
@@ -115,9 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'layers','hidden','heads','kvHeads','ffnMult','vocab','tieEmb','ctx',
         'isMoE', 'moeExperts','moeActiveExperts','norm','activation','mlp','pos_embedding'
     ];
-    const CORE_ARCH_KEYS = ['layers', 'hidden', 'heads', 'kvHeads', 'ffnMult', 'vocab'];
     const STATE_KEYS = [
-        'family','variant', ...ARCH_KEYS,
+        'modelSelect', ...ARCH_KEYS,
         'precisionTrain','optimizer','dp','zero','seqTrain','mbsz','ckpt','flash',
         'quant','quantKV','seqInfer','batchInfer'
     ];
@@ -147,53 +141,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function finishInitialization() {
-        setupUI();
+        populateModelSelect();
+        applyModel();
         calculate();
     }
 
-    async function loadModels() {
-        if (window.location.protocol === 'file:') {
-            dom.localFileLoader.style.display = 'block';
-            return;
+    function parseConfig(id, config, meta) {
+        const isMoE =
+            (config.architectures?.[0] || '').toLowerCase().includes('moe') ||
+            (config.num_local_experts ?? 0) > 1 ||
+            (config.n_routed_experts ?? 0) > 0 ||
+            (config.num_experts ?? 0) > 0;
+
+        const ffnMult = (config.intermediate_size && config.hidden_size)
+            ? (config.intermediate_size / config.hidden_size) : null;
+
+        const parsed = {
+            id: id,
+            name: meta.name,
+            family: meta.family,
+            license: meta.license,
+            notes: meta.notes,
+            links: meta.links,
+
+            layers: config.num_hidden_layers,
+            hidden: config.hidden_size,
+            heads: config.num_attention_heads,
+            kvHeads: config.num_key_value_heads,
+            ffnMult: ffnMult ? parseFloat(ffnMult.toFixed(2)) : null,
+            vocab: config.vocab_size,
+            ctx: config.max_position_embeddings,
+            tieEmb: config.tie_word_embeddings,
+
+            isMoE: isMoE,
+            mlp: config.hidden_act === 'silu' ? 'GatedMLP' : 'StandardMLP',
+            norm: config.rms_norm_eps ? 'RMSNorm' : 'LayerNorm',
+            pos_embedding: 'RoPE', // Default
+        };
+
+        if (isMoE) {
+            parsed.moeExperts =
+                config.num_local_experts || config.num_experts ||
+                ((config.n_routed_experts || 0) + (config.n_shared_experts || 0));
+            
+            const topK = config.num_experts_per_tok || config.experts_per_token || 0;
+            parsed.moeShared = config.n_shared_experts || 0;
+            // Active experts = topK routed experts + always-active shared experts
+            parsed.moeActiveExperts = topK + parsed.moeShared;
+            
+            // The actual intermediate size for each expert's FFN
+            parsed.moeInter = config.moe_intermediate_size || null;
+            // Some models (like DeepSeek) have dense layers at the beginning
+            parsed.moeDenseReplace = config.first_k_dense_replace || 0;
         }
-        try {
-            const response = await fetch('models.json');
-            MODELS = await response.json();
-            finishInitialization();
-        } catch (error) {
-            console.error("Failed to fetch models.json:", error);
-            dom.localFileLoader.style.display = 'block';
-            alert("Could not fetch model data. Please upload models.json manually.");
+
+        // Special case for DeepSeek's MLA attention for accurate KV cache calculation
+        if ((config.model_type || '').startsWith('deepseek_') || ('kv_lora_rank' in config)) {
+            parsed.attention = 'MLA';
+            parsed.kvDimMLA = config.kv_lora_rank || null;
+            parsed.mlaRopeKV = config.qk_rope_head_dim || null;
         }
+
+        return parsed;
     }
 
-    function setupUI() {
-        populateFamilies();
-        updateVariants();
-        applyVariant();
+    async function loadModels() {
+        try {
+            const indexResponse = await fetch('models/index.json');
+            const modelIds = await indexResponse.json();
+
+            const promises = modelIds.map(id => Promise.all([
+                fetch(`models/${id}/config.json`).then(res => res.json()),
+                fetch(`models/${id}/meta.json`).then(res => res.json())
+            ]).then(([config, meta]) => {
+                MODELS[id] = parseConfig(id, config, meta);
+            }));
+
+            await Promise.all(promises);
+            finishInitialization();
+        } catch (error) {
+            console.error("Failed to fetch model data:", error);
+            alert("Could not fetch model data. Check the `models` directory and `index.json`.");
+        }
     }
 
     function setupEventListeners() {
-        dom.modelFileInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    MODELS = JSON.parse(e.target.result);
-                    dom.localFileLoader.style.display = 'none';
-                    finishInitialization();
-                } catch (err) {
-                    alert("Error parsing models.json: " + err.message);
-                }
-            };
-            reader.readAsText(file);
-        });
-
         Object.values(dom.langButtons).forEach(btn => btn.addEventListener('click', (e) => setLanguage(e.target.id.split('-')[1])));
         dom.themeToggle.addEventListener('click', toggleTheme);
-        dom.family.addEventListener('change', () => { updateVariants(); applyVariant(); calculate(); saveStateToHash(); });
-        dom.variant.addEventListener('change', () => { applyVariant(); calculate(); saveStateToHash(); });
+        dom.modelSelect.addEventListener('change', () => { applyModel(); calculate(); saveStateToHash(); });
         
         $$('input, select').forEach(el => {
             const handler = () => {
@@ -212,7 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.values(dom.tabs).forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
         window.addEventListener('hashchange', loadStateFromHash);
         dom.shareBtn.addEventListener('click', shareState);
-        dom.modifyBtn.addEventListener('click', handleModifyClick);
+        dom.resetBtn.addEventListener('click', () => { applyModel(); calculate(); saveStateToHash(); });
     }
 
     // --- THEME & LANGUAGE ---
@@ -223,10 +258,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (key) el.textContent = t(key);
         });
         $$('[data-t-placeholder]').forEach(el => el.placeholder = t(el.dataset.tPlaceholder));
-        if (MODELS.length > 0) {
-            populateFamilies();
-            updateVariants();
-            applyVariant();
+        if (Object.keys(MODELS).length > 0) {
+            populateModelSelect();
+            applyModel();
             calculate();
         }
     }
@@ -263,58 +297,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- UI & STATE MANAGEMENT ---
-    function populateFamilies() {
-        const currentVal = dom.family.value;
-        dom.family.innerHTML = MODELS.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
-        if ([...dom.family.options].some(o => o.value === currentVal)) dom.family.value = currentVal;
-    }
-
-    function updateVariants() {
-        const fam = getFamily();
-        if (!fam) return;
-        const currentVal = dom.variant.value;
-        dom.variant.innerHTML = fam.variants.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
-        if ([...dom.variant.options].some(o => o.value === currentVal)) dom.variant.value = currentVal;
-    }
-
-    function getFamily() { return MODELS.find(f => f.id === dom.family.value) || MODELS[0]; }
-    function getVariant() {
-        const fam = getFamily();
-        return fam ? (fam.variants.find(v => v.id === dom.variant.value) || fam.variants[0]) : null;
-    }
-
-    function applyVariant() {
-        const v = getVariant();
-        if (!v) return;
-        
-        ARCH_KEYS.forEach(key => {
-            if (dom[key] && key !== 'isMoE') {
-                const value = v[key];
-                dom[key].value = (value !== undefined && value !== null) ? value : '';
-            }
+    function populateModelSelect() {
+        const currentVal = dom.modelSelect.value;
+        const modelGroups = {};
+        Object.values(MODELS).forEach(m => {
+            if (!modelGroups[m.family]) modelGroups[m.family] = [];
+            modelGroups[m.family].push(m);
         });
 
-        dom.isMoE.checked = !!v.moe;
-        if (v.moe) {
-            dom.moeExperts.value = v.moe.experts_total ?? v.moe.experts ?? '';
-            const active = (v.moe.topK != null) ? (Number(v.moe.topK) + Number(v.moe.shared ?? 0)) : '';
-            dom.moeActiveExperts.value = active;
-        } else {
-            dom.moeExperts.value = '';
-            dom.moeActiveExperts.value = '';
-        }
-        dom.moeDetailsRow.style.display = dom.isMoE.checked ? 'grid' : 'none';
-
-        let notes = v.notes?.[currentLang] || getFamily().notes?.[currentLang] || '';
-        if (v.moe && !notes.includes('Mixture-of-Experts')) {
-            notes += ' ' + t('moe_info').replace('{experts}', v.moe.experts_total || v.moe.experts).replace('{topK}', v.moe.topK);
-        }
-        dom.modelNotes.textContent = notes;
-        dom.modelLinks.innerHTML = getFamily().links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
+        dom.modelSelect.innerHTML = Object.entries(modelGroups).map(([family, models]) => `
+            <optgroup label="${family}">
+                ${models.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+            </optgroup>
+        `).join('');
         
-        originalVariantState = {};
+        if ([...dom.modelSelect.options].some(o => o.value === currentVal)) {
+            dom.modelSelect.value = currentVal;
+        }
+    }
+
+    function getSelectedModel() {
+        return MODELS[dom.modelSelect.value];
+    }
+
+    function applyModel() {
+        const model = getSelectedModel();
+        if (!model) return;
+        
+        Object.keys(model).forEach(key => {
+            if (dom[key]) {
+                const value = model[key];
+                if (dom[key].type === 'checkbox') {
+                    dom[key].checked = !!value;
+                } else {
+                    dom[key].value = (value !== undefined && value !== null) ? value : '';
+                }
+            }
+        });
+        
+        dom.moeDetailsRow.style.display = dom.isMoE.checked ? 'grid' : 'none';
+        dom.modelNotes.textContent = model.notes?.[currentLang] || model.notes?.['en'] || '';
+        dom.modelLinks.innerHTML = model.links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
+        
+        originalModelState = {};
         ARCH_KEYS.forEach(k => {
-            if (dom[k]) originalVariantState[k] = readVal(dom[k]);
+            if (dom[k]) originalModelState[k] = readVal(dom[k]);
         });
         
         updateButtonAndTitleState();
@@ -322,55 +349,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isArchModified() {
         const current = collectState();
-        return ARCH_KEYS.some(k => !isEqual(current[k], originalVariantState[k]));
+        return ARCH_KEYS.some(k => !isEqual(current[k], originalModelState[k]));
     }
 
     function updateButtonAndTitleState() {
-        const v = getVariant();
         const modified = isArchModified();
-        
-        const option = dom.variant.options[dom.variant.selectedIndex];
+        const option = dom.modelSelect.options[dom.modelSelect.selectedIndex];
         if (option) {
+            const model = getSelectedModel();
             if (modified) {
                 if (!option.text.includes(t('custom_model'))) {
                     option.text += ` ${t('custom_model')}`;
                 }
             } else {
-                if (v) option.text = v.name;
+                if (model) option.text = model.name;
             }
         }
-
-        const isLocked = !!v?.paramsOnly && !dom.modifyBtn.dataset.unlocked;
-        CORE_ARCH_KEYS.forEach(key => dom[key].readOnly = isLocked);
-
-        if (v?.paramsOnly) {
-            dom.modifyBtn.style.display = 'block';
-            dom.modifyBtn.textContent = isLocked ? t('unlock') : t('reset');
-        } else if (modified) {
-            dom.modifyBtn.style.display = 'block';
-            dom.modifyBtn.textContent = t('reset');
-        } else {
-            dom.modifyBtn.style.display = 'none';
-        }
-    }
-
-    function handleModifyClick() {
-        const v = getVariant();
-        if (v?.paramsOnly) {
-            const isLocked = CORE_ARCH_KEYS.some(key => dom[key].readOnly);
-            if (isLocked) {
-                CORE_ARCH_KEYS.forEach(key => { if (dom[key]) dom[key].readOnly = false; });
-                dom.modifyBtn.dataset.unlocked = 'true';
-            } else {
-                delete dom.modifyBtn.dataset.unlocked;
-                applyVariant();
-            }
-        } else {
-            applyVariant();
-        }
-        updateButtonAndTitleState();
-        calculate();
-        saveStateToHash();
+        dom.resetBtn.style.display = modified ? 'block' : 'none';
     }
 
     function switchTab(tab) {
@@ -395,12 +390,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyState(s) {
         if (!s) return;
-        if (s.family && dom.family) dom.family.value = s.family;
-        updateVariants();
-        if (s.variant && dom.variant) dom.variant.value = s.variant;
-        applyVariant();
+        if (s.modelSelect && dom.modelSelect) dom.modelSelect.value = s.modelSelect;
+        applyModel();
         STATE_KEYS.forEach(k => {
-            if (k === 'family' || k === 'variant') return;
+            if (k === 'modelSelect') return;
             if (s[k] != null && dom[k]) {
                 if (dom[k].type === 'checkbox') dom[k].checked = s[k];
                 else dom[k].value = s[k];
@@ -458,30 +451,57 @@ document.addEventListener('DOMContentLoaded', () => {
         return map[dtype] || 2;
     }
 
+    // --- START: MODIFIED CODE ---
     function calculateParameters(s) {
         const { layers: L, hidden: H, heads: A, kvHeads, ffnMult: fm, vocab: V, tieEmb, mlp, isMoE, moeExperts, moeActiveExperts } = s;
-        if (![L, H, A, fm, V].every(x => typeof x === 'number' && x > 0)) {
+        const model = getSelectedModel() || {};
+        
+        if (!(L > 0 && H > 0 && A > 0 && V > 0)) {
             return { total: 0, active: 0 };
         }
+
         const AkEff = (typeof kvHeads === 'number' && kvHeads > 0) ? kvHeads : A;
         const kvRatio = AkEff / A;
         const attn = L * (H * H * (2 + 2 * kvRatio));
         const emb = V * H;
         const lmHead = (tieEmb === 'true' || tieEmb === true) ? 0 : V * H;
-        const baseFfnPerLayer = (mlp === 'GatedMLP' ? 3 : 2) * fm * H * H;
-        
-        let E_total = 1, E_active = 1;
+        const coeff = (mlp === 'GatedMLP' ? 3 : 2);
+
+        let ffn_total = 0, ffn_active = 0;
+
         if (isMoE) {
-            E_total = (typeof moeExperts === 'number' && moeExperts > 0) ? moeExperts : 1;
-            E_active = (typeof moeActiveExperts === 'number' && moeActiveExperts > 0) ? moeActiveExperts : E_total;
+            const E_total = (typeof moeExperts === 'number' && moeExperts > 0) ? moeExperts : 1;
+            const E_active = (typeof moeActiveExperts === 'number' && moeActiveExperts > 0) ? moeActiveExperts : Math.min(1, E_total);
+
+            if (model.moeInter) {
+                // Case 1: Advanced MoE with specific expert size (Qwen3, DeepSeek)
+                const perExpertParams = coeff * H * model.moeInter;
+                const L_dense = Math.min(L, Number(model.moeDenseReplace || 0));
+                const L_moe = Math.max(0, L - L_dense);
+                const densePerLayerParams = (model.ffnMult ? coeff * model.ffnMult * H * H : 0);
+                
+                ffn_total  = (L_moe * E_total  * perExpertParams) + (L_dense * densePerLayerParams);
+                ffn_active = (L_moe * E_active * perExpertParams) + (L_dense * densePerLayerParams);
+            } else {
+                // Case 2: Standard MoE where each expert is a full FFN (GPT-OSS)
+                const ffnMultEff = (typeof fm === 'number' && fm > 0) ? fm : (model.ffnMult || 0);
+                const baseFfnPerLayer = coeff * ffnMultEff * H * H;
+                ffn_total = L * E_total * baseFfnPerLayer;
+                ffn_active = L * E_active * baseFfnPerLayer;
+            }
+        } else {
+            // Case 3: Dense model
+            const ffnMultEff = (typeof fm === 'number' && fm > 0) ? fm : (model.ffnMult || 0);
+            const perLayerParams = coeff * ffnMultEff * H * H;
+            ffn_total = L * perLayerParams;
+            ffn_active = ffn_total;
         }
 
-        const ffn_total = L * E_total * baseFfnPerLayer;
-        const ffn_active = L * E_active * baseFfnPerLayer;
         const total = attn + ffn_total + emb + lmHead;
         const active = attn + ffn_active + emb + lmHead;
         return { total, active };
     }
+    // --- END: MODIFIED CODE ---
 
     function calcTrainingMemory(s) {
         const table = [];
@@ -527,10 +547,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function getKvCacheBytes(s) {
-        const v = getVariant();
-        if (v && v.attention === 'MLA' && (v.kvDimMLA || v.mlaRopeKV)) {
+        const model = getSelectedModel();
+        if (model?.attention === 'MLA' && (model.kvDimMLA || model.mlaRopeKV)) {
             const headsEff = (typeof s.heads === 'number' && s.heads > 0) ? s.heads : 1;
-            const elemsPerTok = Number(v.kvDimMLA || 0) + headsEff * Number(v.mlaRopeKV || 0);
+            const elemsPerTok = Number(model.kvDimMLA || 0) + headsEff * Number(model.mlaRopeKV || 0);
             return s.layers * elemsPerTok * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
         }
         const headsEff = (typeof s.heads === 'number' && s.heads > 0) ? s.heads : 1;
@@ -558,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calculate() {
-        if (MODELS.length === 0) return;
+        if (Object.keys(MODELS).length === 0) return;
         const s = collectState();
         const mode = document.querySelector('.tab-btn.active').dataset.tab;
         const result = mode === 'train' ? calcTrainingMemory(s) : calcInferenceMemory(s);
@@ -566,7 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalB = (result.totalParams / 1e9).toFixed(2);
         const activeB = (result.activeParams / 1e9).toFixed(2);
         
-        if (Math.abs(result.totalParams - result.activeParams) < 1e6) {
+        if (Math.abs(result.totalParams - result.activeParams) < 1e6 || result.activeParams === 0) {
             dom.paramsTotal.innerHTML = `${totalB}B`;
         } else {
             dom.paramsTotal.innerHTML = `${totalB}B <span class="active-params">(${activeB}B active)</span>`;

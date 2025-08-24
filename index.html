@@ -36,11 +36,10 @@
             <input type="file" id="model-file-input" accept=".json">
         </div>
         <div class="row">
-          <div class="col-6"><label data-t="family">Family</label><select id="family"></select></div>
-          <div class="col-6 variant-container">
-            <label data-t="variant">Variant</label>
-            <select id="variant"></select>
-            <button id="modify-btn" class="modify-btn" style="display:none;" data-t="reset">Reset</button>
+          <div class="col-12 variant-container">
+            <label data-t="model_select">Model</label>
+            <select id="model-select"></select>
+            <button id="reset-btn" class="reset-btn" style="display:none;" data-t="reset">Reset</button>
           </div>
         </div>
 
@@ -58,7 +57,6 @@
           <div class="col-3"><label data-t="context_window">Context</label><input type="number" id="ctx"></div>
         </div>
         
-        <!-- MoE Checkbox -->
         <div class="row moe-toggle-row">
             <div class="col-12">
                 <input type="checkbox" id="isMoE" />
@@ -66,7 +64,6 @@
             </div>
         </div>
 
-        <!-- MoE Details Row -->
         <div class="row" id="moe-details-row" style="display: none;">
             <div class="col-6"><label data-t="moe_total_experts">Total Experts</label><input type="number" id="moeExperts"></div>
             <div class="col-6"><label data-t="moe_active_experts">Active Experts (Top-K)</label><input type="number" id="moeActiveExperts"></div>

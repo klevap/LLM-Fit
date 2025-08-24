@@ -1,0 +1,10 @@
+{
+  "name": "DeepSeek R1 671B",
+  "family": "DeepSeek",
+  "license": "DeepSeek/MIT",
+  "notes": {
+    "en": "DeepSeek R1 is a 671B MoE model focused on step-by-step reasoning, with 37B active parameters.",
+    "ru": "DeepSeek R1 - MoE модель на 671B параметров с фокусом на пошаговых рассуждениях, 37B активных параметров."
+  },
+  "links": [{ "t": "Official Page", "href": "https://www.deepseek.com/" }]
+}

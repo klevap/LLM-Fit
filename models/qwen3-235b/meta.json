@@ -1,0 +1,10 @@
+{
+  "name": "Qwen 3 235B",
+  "family": "Qwen",
+  "license": "Qianwen",
+  "notes": {
+    "en": "Qwen 3 235B is a powerful MoE model with 22B active parameters, developed by Alibaba Cloud.",
+    "ru": "Qwen 3 235B - мощная MoE модель с 22B активных параметров от Alibaba Cloud."
+  },
+  "links": [{ "t": "Technical Report", "href": "https://zhuanlan.zhihu.com/p/711329623" }]
+}

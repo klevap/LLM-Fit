@@ -1,0 +1,10 @@
+{
+  "name": "GPT-OSS 120B",
+  "family": "GPT-OSS",
+  "license": "Apache 2.0",
+  "notes": {
+    "en": "OpenAI's 120B parameter open-weight MoE model, optimized for reasoning and tool use.",
+    "ru": "Открытая MoE модель от OpenAI на 120B параметров, оптимизированная для логики и инструментов."
+  },
+  "links": [{ "t": "Official Announcement", "href": "https://openai.com/index/introducing-gpt-oss/" }]
+}
