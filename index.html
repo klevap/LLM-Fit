@@ -40,7 +40,7 @@
           <div class="col-6 variant-container">
             <label data-t="variant">Variant</label>
             <select id="variant"></select>
-            <button id="reset-btn" class="reset-btn" style="display:none;" data-t="reset">Reset</button>
+            <button id="modify-btn" class="modify-btn" style="display:none;" data-t="reset">Reset</button>
           </div>
         </div>
 
@@ -57,8 +57,17 @@
           <div class="col-3"><label data-t="tie_embeddings">Tie Embeddings</label><select id="tieEmb"><option value="true" data-t="yes">Yes</option><option value="false" data-t="no">No</option></select></div>
           <div class="col-3"><label data-t="context_window">Context</label><input type="number" id="ctx"></div>
         </div>
+        
+        <!-- MoE Checkbox -->
+        <div class="row moe-toggle-row">
+            <div class="col-12">
+                <input type="checkbox" id="isMoE" />
+                <label for="isMoE" data-t="is_moe_model">Mixture-of-Experts (MoE) Model</label>
+            </div>
+        </div>
+
         <!-- MoE Details Row -->
-        <div class="row" id="moe-details-row">
+        <div class="row" id="moe-details-row" style="display: none;">
             <div class="col-6"><label data-t="moe_total_experts">Total Experts</label><input type="number" id="moeExperts"></div>
             <div class="col-6"><label data-t="moe_active_experts">Active Experts (Top-K)</label><input type="number" id="moeActiveExperts"></div>
         </div>
