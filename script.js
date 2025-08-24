@@ -211,9 +211,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.tPlaceholder;
             el.placeholder = t(key);
         });
-        populateFamilies(); // Repopulate selects with translated names
+        populateFamilies();
         updateVariants();
-        calculate(); // Recalculate to update table headers
+        calculate();
     }
 
     function setLanguage(lang) {
@@ -226,8 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupLanguage() {
         const savedLang = localStorage.getItem('llm_fit_lang');
-        const browserLang = navigator.language.split('-')[0];
-        const lang = savedLang || (translations[browserLang] ? browserLang : 'en');
+        const lang = savedLang || 'en';
         setLanguage(lang);
     }
 
@@ -302,11 +301,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function collectState() {
         return {
-            fam: dom.family.value, var: dom.variant.value,
-            l: +dom.layers.value, h: +dom.hidden.value, a: +dom.heads.value, k: +dom.kvHeads.value, f: +dom.ffnMult.value, v: +dom.vocab.value, t: dom.tieEmb.value === 'true',
-            pt: dom.precisionTrain.value, o: dom.optimizer.value, dp: +dom.dp.value, z: +dom.zero.value, st: +dom.seqTrain.value, mb: +dom.mbsz.value, ck: dom.ckpt.value, fl: dom.flash.value === 'true',
-            le: dom.loraEnabled.value, lr: +dom.loraR.value,
-            q: dom.quant.value, qk: dom.quantKV.value, si: +dom.seqInfer.value, bi: +dom.batchInfer.value,
+            family: dom.family.value, variant: dom.variant.value,
+            layers: +dom.layers.value, hidden: +dom.hidden.value, heads: +dom.heads.value, kvHeads: +dom.kvHeads.value, ffnMult: +dom.ffnMult.value, vocab: +dom.vocab.value, tieEmb: dom.tieEmb.value === 'true',
+            precisionTrain: dom.precisionTrain.value, optimizer: dom.optimizer.value, dp: +dom.dp.value, zero: +dom.zero.value, seqTrain: +dom.seqTrain.value, mbsz: +dom.mbsz.value, ckpt: dom.ckpt.value, flash: dom.flash.value === 'true',
+            loraEnabled: dom.loraEnabled.value, loraR: +dom.loraR.value,
+            quant: dom.quant.value, quantKV: dom.quantKV.value, seqInfer: +dom.seqInfer.value, batchInfer: +dom.batchInfer.value,
             tab: document.querySelector('.tab-btn.active')?.dataset?.tab || 'train',
             lang: currentLang
         };
@@ -314,13 +313,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function applyState(s) {
         if (!s) return;
-        dom.family.value = s.fam || MODELS[0].id;
+        dom.family.value = s.family || MODELS[0].id;
         updateVariants();
-        dom.variant.value = s.var || getFamily().variants[0].id;
-        dom.layers.value = s.l; dom.hidden.value = s.h; dom.heads.value = s.a; dom.kvHeads.value = s.k; dom.ffnMult.value = s.f; dom.vocab.value = s.v; dom.tieEmb.value = String(s.t);
-        dom.precisionTrain.value = s.pt; dom.optimizer.value = s.o; dom.dp.value = s.dp; dom.zero.value = s.z; dom.seqTrain.value = s.st; dom.mbsz.value = s.mb; dom.ckpt.value = s.ck; dom.flash.value = String(s.fl);
-        dom.loraEnabled.value = s.le; dom.loraR.value = s.lr;
-        dom.quant.value = s.q; dom.quantKV.value = s.qk; dom.seqInfer.value = s.si; dom.batchInfer.value = s.bi;
+        dom.variant.value = s.variant || getFamily().variants[0].id;
+        dom.layers.value = s.layers; dom.hidden.value = s.hidden; dom.heads.value = s.heads; dom.kvHeads.value = s.kvHeads; dom.ffnMult.value = s.ffnMult; dom.vocab.value = s.vocab; dom.tieEmb.value = String(s.tieEmb);
+        dom.precisionTrain.value = s.precisionTrain; dom.optimizer.value = s.optimizer; dom.dp.value = s.dp; dom.zero.value = s.zero; dom.seqTrain.value = s.seqTrain; dom.mbsz.value = s.mbsz; dom.ckpt.value = s.ckpt; dom.flash.value = String(s.flash);
+        dom.loraEnabled.value = s.loraEnabled; dom.loraR.value = s.loraR;
+        dom.quant.value = s.quant; dom.quantKV.value = s.quantKV; dom.seqInfer.value = s.seqInfer; dom.batchInfer.value = s.batchInfer;
         applyVariant();
         switchTab(s.tab || 'train');
         if (s.lang && s.lang !== currentLang) setLanguage(s.lang);
