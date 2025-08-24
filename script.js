@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle: "Your LLM-to-GPU Sizing Tool",
             download_config: "Download Config",
             upload_config: "Upload Config",
+            upload_tooltip: "Upload a custom architecture file in this app's format or a standard config.json from Hugging Face.",
             copied: "✅ Copied!",
             reset: "Reset",
             custom_model: "(Custom)",
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             subtitle: "Ваш инструмент подбора GPU для LLM",
             download_config: "Скачать конфиг",
             upload_config: "Загрузить конфиг",
+            upload_tooltip: "Загрузите файл архитектуры в формате этого приложения или стандартный config.json с Hugging Face.",
             copied: "✅ Скопировано!",
             reset: "Сброс",
             custom_model: "(Custom)",
@@ -107,8 +109,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- PARSING & UI RENDERING ---
     function parseConfig(config) {
+        // This function is designed to be robust and handle both the app's internal format
+        // and standard Hugging Face config.json files.
         const arch = [];
+        
+        // Handle nested configs (e.g., Gemma 3) by defaulting to the root object.
         const textSource = config.text_config || config;
+        
         const vocabSize = pick(textSource.vocab_size, config.vocab_size);
         const tieEmb = pick(textSource.tie_word_embeddings, config.tie_word_embeddings, false);
 
@@ -116,6 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const L = textSource.num_hidden_layers;
         if (!H || !L) {
             console.error("Core parameters (hidden_size, num_hidden_layers) not found in config.", config);
+            alert("Could not parse the model configuration. Essential parameters like 'hidden_size' or 'num_hidden_layers' are missing.");
             return []; // Return empty architecture if core params are missing
         }
         
@@ -140,8 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // --- START: REVISED LOGIC FOR GROUPING LAYERS ---
-
         // 3. Define layer properties
         const isMLA = (config.model_type || '').includes('deepseek') || (config.attention || '').toUpperCase() === 'MLA';
         const expertsTotal = pick(textSource.num_local_experts, textSource.num_experts, config.n_routed_experts);
@@ -156,11 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const layerTypes = textSource.layer_types || Array(L).fill('full_attention');
         const slideWin = pick(textSource.sliding_window, config.sliding_window, null);
 
-        // 4. Group all identical layer types together, regardless of their position
+        // 4. Group all identical layer types together for a cleaner UI
         const layerGroups = {};
 
         for (const lt of layerTypes) {
-            // Create a template for the current layer type to generate a unique key
             const blockTemplate = {
                 type: 'attention_layer',
                 layerType: lt,
@@ -185,25 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             }
 
-            // Use a stringified version of the template as a key for grouping
             const groupKey = JSON.stringify(blockTemplate);
-
             if (layerGroups[groupKey]) {
                 layerGroups[groupKey].count++;
             } else {
-                layerGroups[groupKey] = {
-                    ...blockTemplate,
-                    count: 1 // Initialize count
-                };
+                layerGroups[groupKey] = { ...blockTemplate, count: 1 };
             }
         }
-
-        // 5. Add the final grouped blocks to the main architecture array
         arch.push(...Object.values(layerGroups));
 
-        // --- END: REVISED LOGIC ---
-
-        // 6. LM Head Layer
+        // 5. LM Head Layer
         arch.push({ type: 'lm_head', vocab: vocabSize, hidden: H, tieEmb });
         
         return arch;
@@ -226,8 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const gridDiv = document.createElement('div');
             gridDiv.className = 'arch-grid';
 
-            const createInput = (key, label, readOnly = false) => {
-                const value = block[key];
+            const createInput = (key, label, readOnly = false, sourceObj = block) => {
+                const value = sourceObj[key];
                 if (typeof value === 'undefined' || value === null || typeof value === 'boolean') return '';
                 return `
                     <div class="arch-grid-item">
@@ -308,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.uploadConfigInput.addEventListener('change', uploadConfig);
     }
 
-    // --- THEME & LANGUAGE --- [без изменений]
+    // --- THEME & LANGUAGE ---
     function applyTranslations() {
         document.documentElement.lang = currentLang;
         $$('[data-t]').forEach(el => {
@@ -316,6 +312,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (key) el.textContent = t(key);
         });
         $$('[data-t-placeholder]').forEach(el => el.placeholder = t(el.dataset.tPlaceholder));
+        $$('[data-t-title]').forEach(el => {
+            const key = el.dataset.tTitle;
+            if(key) el.title = t(key);
+        });
         if (Object.keys(MODELS).length > 0) {
             populateModelSelect();
             applyModel();
@@ -394,7 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
         calculate();
     }
     
-    // --- Остальные функции UI & State Management без изменений ---
     function updateArchitectureFromUI() {
         $$('.arch-block').forEach(blockDiv => {
             const index = parseInt(blockDiv.dataset.index, 10);
@@ -461,19 +460,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
-                const newArch = JSON.parse(e.target.result);
-                if (Array.isArray(newArch) && newArch.every(b => b.type)) {
+                const uploadedJson = JSON.parse(e.target.result);
+                // The parseConfig function is robust enough to handle both formats
+                const newArch = parseConfig(uploadedJson);
+
+                if (Array.isArray(newArch) && newArch.length > 0) {
                     currentArchitecture = newArch;
-                    originalArchitecture = JSON.parse(JSON.stringify(newArch));
+                    originalArchitecture = JSON.parse(JSON.stringify(newArch)); // Set baseline for custom model
                     renderArchitectureUI();
-                    updateButtonAndTitleState();
-                    calculate();
+                    
+                    // Mark the current selection as a custom model
                     const option = dom.modelSelect.options[dom.modelSelect.selectedIndex];
                     if (option && !option.text.includes(t('custom_model'))) {
                          option.text += ` ${t('custom_model')}`;
                     }
+                    updateButtonAndTitleState();
+                    calculate();
+
                 } else {
-                    alert('Invalid configuration file format.');
+                    alert('Invalid or incomplete configuration file.');
                 }
             } catch (err) {
                 alert('Error parsing configuration file.');
@@ -481,6 +486,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
         reader.readAsText(file);
+        // Reset the input value to allow uploading the same file again
+        event.target.value = '';
     }
     // --- CALCULATIONS ---
     function bytesOf(dtype) {
