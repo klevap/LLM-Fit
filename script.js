@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fmtGB = x => `${x.toFixed(2)} GB`;
     const fmtMB = x => `${x.toFixed(1)} MB`;
     const t = (key, lang = currentLang) => translations[lang][key] || key;
+    const ACT_COEFF = 6;
 
     // --- CORE LOGIC ---
     async function main() {
@@ -234,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Handle MoE details
         if (v.moe) {
             dom.moeDetailsRow.style.display = 'grid';
             dom.moeExperts.value = v.moe.experts;
@@ -321,12 +321,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function calcParams(s) {
+        const v = getVariant(); // Получаем текущий выбранный вариант модели
         const { layers: L, hidden: H, heads: A, kvHeads: Ak, ffnMult: fm, vocab: V, tieEmb } = s;
+        
         const kvRatio = Math.max(1, Ak) / Math.max(1, A);
         const attn = L * (H * H * (2 + 2 * kvRatio));
-        const ffn = L * (s.mlp === 'GatedMLP' ? 3 : 2) * fm * H * H;
         const emb = V * H;
         const lmHead = tieEmb === 'true' ? 0 : V * H;
+        
+        const baseFfnPerLayer = (s.mlp === 'GatedMLP' ? 3 : 2) * fm * H * H;
+        let ffn;
+
+        if (v && v.moe) {
+            const E = Number(v.moe.experts);
+            if (Number.isFinite(E) && E > 1) {
+                // Классический MoE: параметры MLP умножаются на число экспертов
+                ffn = L * E * baseFfnPerLayer;
+            } else if (typeof v.params === 'number') {
+                // Для гибридных MoE или где число экспертов не указано,
+                // вычисляем FFN как остаток от общего числа параметров
+                const variantHead = v.tieEmb ? 0 : V * H;
+                ffn = Math.max(0, v.params - attn - emb - variantHead);
+            } else {
+                ffn = L * baseFfnPerLayer; // Fallback для плотной модели
+            }
+        } else {
+            ffn = L * baseFfnPerLayer;
+        }
+
         return attn + ffn + emb + lmHead;
     }
 
@@ -342,25 +364,53 @@ document.addEventListener('DOMContentLoaded', () => {
         const partW = zero >= 3 ? 1 / D : 1, partG = zero >= 2 ? 1 / D : 1, partO = zero >= 1 ? 1 / D : 1;
 
         const mem = {};
-        mem.weights = totalParams * weightBytes * partW;
-        if (masterBytes > 0) mem.masterWeights = totalParams * masterBytes * (zero >= 3 ? 1 / D : 1);
-        mem.grads = totalParams * gradBytes * partG;
-        if (optStates > 0) mem.optim = totalParams * optBytes * optStates * partO;
+        
+        if (s.precisionTrain === 'q4lora') {
+            // Специальная логика для QLoRA
+            mem.weights = totalParams * bytesOf('int4') * partW; // Базовая модель в 4 битах
+            // Градиенты и состояния оптимизатора только для LoRA-адаптеров.
+            // Так как их размер неизвестен, принимаем за 0 для нижней оценки.
+            mem.grads = 0;
+            mem.optim = 0;
+            // Мастер-веса не используются
+            mem.masterWeights = 0;
+        } else {
+            mem.weights = totalParams * weightBytes * partW;
+            if (masterBytes > 0) mem.masterWeights = totalParams * masterBytes * (zero >= 1 ? 1 / D : 1);
+            mem.grads = totalParams * gradBytes * partG;
+            if (optStates > 0) mem.optim = totalParams * optBytes * optStates * partO;
+        }
 
-        const ckptFactor = s.ckpt === 'full' ? 1 : Math.sqrt(s.layers);
-        const singleSeqActivations = s.layers * s.hidden * s.seqTrain * actBytes / ckptFactor;
-        mem.activations = singleSeqActivations * s.mbsz;
-        if (s.flash !== 'true') mem.activations += s.layers * s.heads * s.seqTrain * s.seqTrain * s.mbsz * actBytes;
+        const ckptFactor = s.ckpt === 'full' ? Math.max(2, Math.sqrt(s.layers)) : 1;
+        let perSeqActivations = ACT_COEFF * s.layers * s.hidden * s.seqTrain * actBytes / ckptFactor;
+        if (s.flash !== 'true') {
+            perSeqActivations += s.layers * s.heads * s.seqTrain * s.seqTrain * actBytes;
+        }
+        mem.activations = perSeqActivations * s.mbsz;
 
         table.push([t('weights'), fmtGB(toGB(mem.weights))]);
         if (mem.masterWeights) table.push([t('master_weights'), fmtGB(toGB(mem.masterWeights))]);
-        table.push([t('gradients'), fmtGB(toGB(mem.grads))]);
-        if (mem.optim) table.push([`${t('optimizer_states')} (${s.optimizer.toUpperCase()})`, fmtGB(toGB(mem.optim))]);
+        if (s.precisionTrain !== 'q4lora') {
+            table.push([t('gradients'), fmtGB(toGB(mem.grads))]);
+            if (mem.optim) table.push([`${t('optimizer_states')} (${s.optimizer.toUpperCase()})`, fmtGB(toGB(mem.optim))]);
+        }
         table.push([t('activations'), fmtGB(toGB(mem.activations))]);
-        table.push([t('mem_per_sequence'), fmtMB(toMB(singleSeqActivations))]);
+        table.push([t('mem_per_sequence'), fmtMB(toMB(perSeqActivations))]);
 
         const totalBytes = Object.values(mem).reduce((a, b) => a + (b || 0), 0);
         return { totalParams, table, totalGB: toGB(totalBytes * 1.05) };
+    }
+    
+    function getKvCacheBytes(s) {
+        const v = getVariant();
+        const headDim = s.hidden / s.heads;
+        let kvDim = headDim;
+
+        if (v && v.attention === 'MLA' && typeof v.kvDimPerHead === 'number') {
+            kvDim = v.kvDimPerHead; // Используем меньшую размерность для MLA
+        }
+        
+        return 2 * s.layers * s.kvHeads * kvDim * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
     }
 
     function calcInferenceMemory(s) {
@@ -368,9 +418,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalParams = calcParams(s);
         const mem = {};
         mem.weights = totalParams * bytesOf(s.quant);
-        const kvCacheBytes = 2 * s.layers * s.kvHeads * (s.hidden / s.heads) * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
-        mem.kvCache = kvCacheBytes;
-        mem.buffers = mem.weights * 0.05;
+        mem.kvCache = getKvCacheBytes(s);
+        
+        const bufFactor = (s.quant === 'int4' || s.quant === 'int8') ? 0.15 : 0.05;
+        mem.buffers = mem.weights * bufFactor;
 
         table.push([t('weights'), fmtGB(toGB(mem.weights))]);
         table.push([t('kv_cache'), fmtGB(toGB(mem.kvCache))]);
