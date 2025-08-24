@@ -87,13 +87,38 @@ h1 { color: var(--primary-color); font-size: 2.2em; margin: 0; }
 .config-controls {
     display: flex;
     gap: 12px;
-    margin-bottom: 12px;
 }
+
+/* --- ИЗМЕНЕНИЯ ЗДЕСЬ (для кнопок) --- */
 .config-controls .control-btn {
-    flex-grow: 1;
+    flex: 1;
     background-color: var(--tab-bg);
     border: 1px solid var(--border-color);
+    
+    /* 1. Задаем жесткую высоту */
+    height: 40px; 
+    
+    /* 2. Убираем вертикальные padding, так как высота уже задана */
+    padding: 0 10px;
+    
+    /* 3. Устанавливаем одинаковый размер шрифта и сбрасываем line-height */
+    font-size: 14px;
+    line-height: 1;
+
+    /* 4. Используем Flexbox для идеального центрирования текста внутри */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.upload-hint {
+    font-size: 12px;
+    color: var(--muted-text);
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
 
 /* --- New Architecture Block Styles --- */
 #architecture-container {
