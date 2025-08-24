@@ -1,0 +1,30 @@
+# Python build artifacts
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+env/
+ENV/
+.env
+
+# IDE and OS specific
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Log files
+*.log
+
+all_txt.bat
+all_txt.py
+
+LLM-Fit_content.md
+

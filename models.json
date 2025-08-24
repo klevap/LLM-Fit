@@ -67,7 +67,7 @@
     },
     "links": [{ "t": "DeepSeek AI", "href": "https://www.deepseek.com/" }],
     "variants": [
-      { "id": "v2-236b", "name": "V2 236B", "params": 236e9, "layers": 64, "hidden": 5120, "heads": 128, "kvHeads": 128, "ffnMult": 6, "vocab": 102400, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "MLA", "moe": { "experts": 64, "topK": 2 }, "notes": { "en": "21B active params. Features Multi-head Latent Attention (MLA).", "ru": "21B активных параметров. Использует Multi-head Latent Attention (MLA)." } },
+      { "id": "v2-236b", "name": "V2 236B", "params": 236e9, "layers": 64, "hidden": 5120, "heads": 128, "kvHeads": 128, "ffnMult": 6, "vocab": 102400, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "MLA", "kvDimPerHead": 16, "moe": { "experts": 64, "topK": 2 }, "notes": { "en": "21B active params. Features Multi-head Latent Attention (MLA).", "ru": "21B активных параметров. Использует Multi-head Latent Attention (MLA)." } },
       { "id": "r1-671b", "name": "R1 671B", "params": 671e9, "layers": 56, "hidden": 6144, "heads": 48, "kvHeads": 8, "ffnMult": 4, "vocab": 128000, "tieEmb": true, "ctx": 128000, "norm": "RMSNorm", "activation": "SwiGLU", "mlp": "GatedMLP", "pos_embedding": "RoPE", "attention": "GQA", "moe": { "experts": 128, "topK": "N/A" }, "notes": { "en": "37B active params. Focus on step-by-step reasoning. Core architecture params are estimated.", "ru": "37B активных параметров. Фокус на пошаговой логике. Параметры архитектуры оценены." } }
     ]
   },

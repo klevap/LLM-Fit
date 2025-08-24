@@ -50,6 +50,11 @@
           <div class="col-3"><label data-t="tie_embeddings">Tie Embeddings</label><select id="tieEmb"><option value="true" data-t="yes">Yes</option><option value="false" data-t="no">No</option></select></div>
           <div class="col-3"><label data-t="context_window">Context</label><input type="number" id="ctx"></div>
         </div>
+        <!-- MoE Details Row -->
+        <div class="row" id="moe-details-row" style="display: none;">
+            <div class="col-6"><label data-t="moe_total_experts">Total Experts</label><input type="text" id="moeExperts"></div>
+            <div class="col-6"><label data-t="moe_active_experts">Active Experts (Top-K)</label><input type="text" id="moeActiveExperts"></div>
+        </div>
 
         <div class="section-title" style="margin-top:18px" data-t="architecture_details">Architectural Details (Reference)</div>
         <div class="row">

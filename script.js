@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
             architecture: "Core Architecture",
             architecture_details: "Architectural Details (Reference)",
             layers_l: "Layers L", hidden_h: "Hidden H", heads_a: "Heads A", kv_heads: "KV Heads", ffn_multiplier: "FFN Multiplier", vocab_v: "Vocabulary V", tie_embeddings: "Tie Embeddings", context_window: "Context",
+            moe_total_experts: "Total Experts", moe_active_experts: "Active Experts (Top-K)",
             norm_type: "Normalization", activation_fn: "Activation Fn", mlp_structure: "MLP Structure", pos_embedding: "Pos. Embedding",
             yes: "Yes", no: "No",
             description_tech: "Description & Technologies",
@@ -41,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             architecture: "Базовая архитектура",
             architecture_details: "Детали архитектуры (справочно)",
             layers_l: "Слои L", hidden_h: "Скрытое H", heads_a: "Головы A", kv_heads: "KV головы", ffn_multiplier: "FFN множитель", vocab_v: "Словарь V", tie_embeddings: "Связать эмбеддинги", context_window: "Контекст",
+            moe_total_experts: "Всего экспертов", moe_active_experts: "Активных экспертов (Top-K)",
             norm_type: "Нормализация", activation_fn: "Активация", mlp_structure: "Структура MLP", pos_embedding: "Поз. эмбеддинг",
             yes: "Да", no: "Нет",
             description_tech: "Описание и технологии",
@@ -72,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dom = {
         family: $('#family'), variant: $('#variant'),
         layers: $('#layers'), hidden: $('#hidden'), heads: $('#heads'), kvHeads: $('#kvHeads'), ffnMult: $('#ffnMult'), vocab: $('#vocab'), tieEmb: $('#tieEmb'), ctx: $('#ctx'),
+        moeDetailsRow: $('#moe-details-row'), moeExperts: $('#moeExperts'), moeActiveExperts: $('#moeActiveExperts'),
         norm: $('#norm'), activation: $('#activation'), mlp: $('#mlp'), pos_embedding: $('#pos_embedding'),
         precisionTrain: $('#precisionTrain'), optimizer: $('#optimizer'), dp: $('#dp'), zero: $('#zero'), seqTrain: $('#seqTrain'), mbsz: $('#mbsz'), ckpt: $('#ckpt'), flash: $('#flash'),
         quant: $('#quant'), quantKV: $('#quantKV'), seqInfer: $('#seqInfer'), batchInfer: $('#batchInfer'),
@@ -109,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadModels() {
         if (window.location.protocol === 'file:') {
             dom.localFileLoader.style.display = 'block';
-            return; // Wait for user to upload file
+            return;
         }
         try {
             const response = await fetch('models.json');
@@ -151,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.variant.addEventListener('change', () => { applyVariant(); calculate(); saveStateToHash(); });
         $$('input, select').forEach(el => {
             el.addEventListener('change', () => { calculate(); saveStateToHash(); });
-            el.addEventListener('input', () => { if (el.type === 'number') calculate(); });
+            el.addEventListener('input', () => { if (el.type === 'number' || el.type === 'text') calculate(); });
         });
         Object.values(dom.tabs).forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
         window.addEventListener('hashchange', loadStateFromHash);
@@ -226,10 +229,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const v = getVariant();
         if (!v) return;
         Object.keys(v).forEach(key => {
-            if (dom[key]) dom[key].value = v[key];
+            if (dom[key] && (dom[key] instanceof HTMLElement)) {
+                 dom[key].value = v[key];
+            }
         });
-        let notes = v.notes?.[currentLang] || getFamily().notes?.[currentLang] || '';
+        
+        // Handle MoE details
         if (v.moe) {
+            dom.moeDetailsRow.style.display = 'grid';
+            dom.moeExperts.value = v.moe.experts;
+            dom.moeActiveExperts.value = v.moe.topK;
+            dom.moeExperts.readOnly = true;
+            dom.moeActiveExperts.readOnly = true;
+        } else {
+            dom.moeDetailsRow.style.display = 'none';
+            dom.moeExperts.value = '';
+            dom.moeActiveExperts.value = '';
+            dom.moeExperts.readOnly = false;
+            dom.moeActiveExperts.readOnly = false;
+        }
+
+        let notes = v.notes?.[currentLang] || getFamily().notes?.[currentLang] || '';
+        if (v.moe && !notes.includes('Mixture-of-Experts')) {
             notes += ' ' + t('moe_info').replace('{experts}', v.moe.experts).replace('{topK}', v.moe.topK);
         }
         dom.modelNotes.textContent = notes;
@@ -250,7 +271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const key in dom) {
             const el = dom[key];
             if (el instanceof HTMLElement && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
-                state[key] = el.type === 'number' ? +el.value : el.value;
+                state[key] = (el.type === 'number') ? +el.value : el.value;
             }
         }
         state.tab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'train';
@@ -264,6 +285,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dom[key] && (dom[key] instanceof HTMLElement)) {
                 dom[key].value = s[key];
             }
+        }
+        if (s.moeExperts || s.moeActiveExperts) {
+            dom.moeDetailsRow.style.display = 'grid';
         }
         if (MODELS.length > 0) {
             updateVariants();
@@ -323,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mem.grads = totalParams * gradBytes * partG;
         if (optStates > 0) mem.optim = totalParams * optBytes * optStates * partO;
 
-        const ckptFactor = s.ckpt === 'full' ? 1 : Math.sqrt(s.layers); // Heuristic
+        const ckptFactor = s.ckpt === 'full' ? 1 : Math.sqrt(s.layers);
         const singleSeqActivations = s.layers * s.hidden * s.seqTrain * actBytes / ckptFactor;
         mem.activations = singleSeqActivations * s.mbsz;
         if (s.flash !== 'true') mem.activations += s.layers * s.heads * s.seqTrain * s.seqTrain * s.mbsz * actBytes;
