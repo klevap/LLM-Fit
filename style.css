@@ -84,6 +84,52 @@ h1 { color: var(--primary-color); font-size: 2.2em; margin: 0; }
 }
 .reset-btn:hover { opacity: 1; }
 
+.config-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.config-controls .control-btn {
+    flex-grow: 1;
+    background-color: var(--tab-bg);
+    border: 1px solid var(--border-color);
+}
+
+/* --- New Architecture Block Styles --- */
+#architecture-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+.arch-block {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    background-color: var(--tab-bg);
+}
+.arch-block-header {
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    font-size: 1em;
+}
+.arch-block-header span {
+    font-weight: 400;
+    color: var(--muted-text);
+    font-size: 0.9em;
+}
+.arch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}
+.arch-grid-item {
+    display: flex;
+    flex-direction: column;
+}
+/* --- End New Styles --- */
+
+
 label { font-weight: 600; color: var(--muted-text); font-size: 13px; margin-bottom: 6px; display: block; }
 input, select {
   width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 15px;
@@ -91,28 +137,8 @@ input, select {
 }
 input:focus, select:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.3); }
 input:read-only { background-color: var(--tab-bg); color: var(--muted-text); cursor: not-allowed; opacity: 0.7; }
-#local-file-loader { margin-bottom: 16px; padding: 12px; border: 1px dashed var(--border-color); border-radius: 8px; }
 .muted { color: var(--muted-text); font-size: 13px; }
 .help a { color: var(--primary-color); text-decoration: none; } .help a:hover { text-decoration: underline; }
-
-.moe-toggle-row {
-    align-items: center;
-    background-color: var(--tab-bg);
-    padding: 8px 12px;
-    border-radius: 8px;
-    margin-top: 16px;
-}
-.moe-toggle-row label {
-    display: inline-block;
-    margin-left: 8px;
-    margin-bottom: 0;
-    vertical-align: middle;
-    cursor: pointer;
-}
-.moe-toggle-row input[type="checkbox"] {
-    width: auto;
-    vertical-align: middle;
-}
 
 .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .kpi { background: var(--kpi-bg); border-radius: 14px; padding: 14px; text-align: center; border: 1px solid var(--border-color); }

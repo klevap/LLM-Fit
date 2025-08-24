@@ -5,19 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
             page_title: "LLM Fit: GPU Memory Calculator",
             main_header: "🧩 LLM Fit",
             subtitle: "Your LLM-to-GPU Sizing Tool",
-            share: "🔗 Share",
+            download_config: "Download Config",
+            upload_config: "Upload Config",
             copied: "✅ Copied!",
             reset: "Reset",
             custom_model: "(Custom)",
-            is_moe_model: "Mixture-of-Experts (MoE) Model",
-            load_models_manually: "Running locally. Load models/index.json manually:",
             model_select: "Model",
-            architecture: "Core Architecture",
-            architecture_details: "Architectural Details (Reference)",
-            layers_l: "Layers L", hidden_h: "Hidden H", heads_a: "Heads A", kv_heads: "KV Heads", ffn_multiplier: "FFN Multiplier", vocab_v: "Vocabulary V", tie_embeddings: "Tie Embeddings", context_window: "Context",
-            moe_total_experts: "Total Experts", moe_active_experts: "Active Experts (Top-K)",
-            norm_type: "Normalization", activation_fn: "Activation Fn", mlp_structure: "MLP Structure", pos_embedding: "Pos. Embedding",
-            yes: "Yes", no: "No",
+            architecture: "Model Architecture",
             description_tech: "Description & Technologies",
             model_notes_placeholder: "Select a model to see its description.",
             mode_and_params: "Mode & Calculation Parameters",
@@ -26,32 +20,25 @@ document.addEventListener('DOMContentLoaded', () => {
             optimizer: "Optimizer", optimizer_sgdm: "SGD w/ Momentum",
             dp_gpus: "Data Parallel GPUs", zero_0: "0 (Off)", zero_1: "1 (Opt.)", zero_2: "2 (+Grad)", zero_3: "3 (+Weights)",
             seq_len_s: "Sequence Length S", batch_per_gpu_b: "Batch per GPU B", full: "Full",
-            weight_quantization: "Weight Quantization", kv_cache_quantization: "KV Cache Quantization", batch_size: "Batch Size",
+            weight_quantization: "Weight Quantization", kv_cache_quantization: "KV Cache Quantization", batch_size: "Batch Size", context_window: "Context",
             results: "Results", model_parameters: "Model Parameters", memory_per_gpu: "Memory per GPU",
             memory_breakdown: "Memory Breakdown",
             gpu_recommendations: "GPU Recommendations", gpu_rec_placeholder: "Results will be shown here.",
             rec_1: "✅ Suitable: RTX 3060 12GB, RTX 4060 Ti 16GB", rec_2: "✅ Suitable: RTX 4070 12GB, A4000 16GB", rec_3: "⚠️ Recommended: RTX 3090/4090 24GB, A5000 24GB", rec_4: "🔴 Required: A6000 48GB, A100 40GB", rec_5: "🔴 Required: A100 80GB or multiple GPUs with Model Parallelism",
             weights: "Model Weights", master_weights: "FP32 Master Weights (AMP)", gradients: "Gradients", optimizer_states: "Optimizer States", activations: "Activations", kv_cache: "KV Cache", buffers: "Buffers & Scratchpad",
             mem_per_sequence: "Memory per Sequence",
-            moe_info: "This is a Mixture-of-Experts (MoE) model with {experts} experts, selecting the top {topK} per token."
         },
         ru: {
             page_title: "LLM Fit: Калькулятор памяти GPU",
             main_header: "🧩 LLM Fit",
             subtitle: "Ваш инструмент подбора GPU для LLM",
-            share: "🔗 Поделиться",
+            download_config: "Скачать конфиг",
+            upload_config: "Загрузить конфиг",
             copied: "✅ Скопировано!",
             reset: "Сброс",
             custom_model: "(Custom)",
-            is_moe_model: "Модель Mixture-of-Experts (MoE)",
-            load_models_manually: "Локальный запуск. Загрузите models/index.json вручную:",
             model_select: "Модель",
-            architecture: "Базовая архитектура",
-            architecture_details: "Детали архитектуры (справочно)",
-            layers_l: "Слои L", hidden_h: "Скрытое H", heads_a: "Головы A", kv_heads: "KV головы", ffn_multiplier: "FFN множитель", vocab_v: "Словарь V", tie_embeddings: "Связать эмбеддинги", context_window: "Контекст",
-            moe_total_experts: "Всего экспертов", moe_active_experts: "Активных экспертов (Top-K)",
-            norm_type: "Нормализация", activation_fn: "Активация", mlp_structure: "Структура MLP", pos_embedding: "Поз. эмбеддинг",
-            yes: "Да", no: "Нет",
+            architecture: "Архитектура модели",
             description_tech: "Описание и технологии",
             model_notes_placeholder: "Выберите модель, чтобы увидеть описание.",
             mode_and_params: "Режим и параметры расчета",
@@ -60,20 +47,20 @@ document.addEventListener('DOMContentLoaded', () => {
             optimizer: "Оптимизатор", optimizer_sgdm: "SGD с моментом",
             dp_gpus: "Data Parallel GPU", zero_0: "0 (выкл.)", zero_1: "1 (Opt.)", zero_2: "2 (+Grad)", zero_3: "3 (+Weights)",
             seq_len_s: "Длина посл. S", batch_per_gpu_b: "Батч на GPU B", full: "Полный",
-            weight_quantization: "Квантизация весов", kv_cache_quantization: "Квантизация KV кэша", batch_size: "Размер батча",
+            weight_quantization: "Квантизация весов", kv_cache_quantization: "Квантизация KV кэша", batch_size: "Размер батча", context_window: "Контекст",
             results: "Результаты", model_parameters: "Параметры модели", memory_per_gpu: "Память на 1 GPU",
             memory_breakdown: "Детализация памяти",
             gpu_recommendations: "Рекомендации по GPU", gpu_rec_placeholder: "Результаты появятся здесь.",
             rec_1: "✅ Подойдет: RTX 3060 (12GB), RTX 4060 Ti (16GB)", rec_2: "✅ Подойдет: RTX 4070 (12GB), A4000 (16GB)", rec_3: "⚠️ Рекомендуется: RTX 3090/4090 (24GB), A5000 (24GB)", rec_4: "🔴 Требуется: A6000 (48GB), A100 (40GB)", rec_5: "🔴 Требуется: A100 (80GB) или несколько GPU с Model Parallelism",
             weights: "Веса модели", master_weights: "FP32 Мастер-веса (AMP)", gradients: "Градиенты", optimizer_states: "Состояния оптимизатора", activations: "Активации", kv_cache: "KV кэш", buffers: "Буферы и оверхед",
             mem_per_sequence: "Память на 1 посл.",
-            moe_info: "Это модель Mixture-of-Experts (MoE) с {experts} экспертами, из которых выбираются {topK} лучших для каждого токена."
         }
     };
 
     // --- STATE & DOM ---
     let MODELS = {};
-    let originalModelState = {};
+    let currentArchitecture = [];
+    let originalArchitecture = [];
     let currentLang = 'en';
     let currentTheme = 'dark';
     const $ = s => document.querySelector(s);
@@ -81,10 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dom = {
         modelSelect: $('#model-select'),
-        layers: $('#layers'), hidden: $('#hidden'), heads: $('#heads'), kvHeads: $('#kvHeads'), ffnMult: $('#ffnMult'), vocab: $('#vocab'), tieEmb: $('#tieEmb'), ctx: $('#ctx'),
-        isMoE: $('#isMoE'),
-        moeDetailsRow: $('#moe-details-row'), moeExperts: $('#moeExperts'), moeActiveExperts: $('#moeActiveExperts'),
-        norm: $('#norm'), activation: $('#activation'), mlp: $('#mlp'), pos_embedding: $('#pos_embedding'),
+        architectureContainer: $('#architecture-container'),
         precisionTrain: $('#precisionTrain'), optimizer: $('#optimizer'), dp: $('#dp'), zero: $('#zero'), seqTrain: $('#seqTrain'), mbsz: $('#mbsz'), ckpt: $('#ckpt'), flash: $('#flash'),
         quant: $('#quant'), quantKV: $('#quantKV'), seqInfer: $('#seqInfer'), batchInfer: $('#batchInfer'),
         paramsTotal: $('#paramsTotal'), memPerGpu: $('#memPerGpu'), tableBody: $('#tableBody'), gpuRec: $('#gpu_recommendation'),
@@ -93,10 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
         panes: { train: $('#pane-train'), infer: $('#pane-infer') },
         themeToggle: $('#theme-toggle'),
         langButtons: { en: $('#lang-en'), ru: $('#lang-ru') },
-        localFileLoader: $('#local-file-loader'),
-        modelFileInput: $('#model-file-input'),
-        shareBtn: $('#share-btn'),
         resetBtn: $('#reset-btn'),
+        downloadConfigBtn: $('#download-config-btn'),
+        uploadConfigInput: $('#upload-config-input'),
     };
 
     // --- HELPERS ---
@@ -106,30 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fmtMB = x => `${x.toFixed(1)} MB`;
     const t = (key, lang = currentLang) => translations[lang][key] || key;
     const ACT_COEFF = 6;
-    const ARCH_KEYS = [
-        'layers','hidden','heads','kvHeads','ffnMult','vocab','tieEmb','ctx',
-        'isMoE', 'moeExperts','moeActiveExperts','norm','activation','mlp','pos_embedding'
-    ];
-    const STATE_KEYS = [
-        'modelSelect', ...ARCH_KEYS,
-        'precisionTrain','optimizer','dp','zero','seqTrain','mbsz','ckpt','flash',
-        'quant','quantKV','seqInfer','batchInfer'
-    ];
-
-    function readVal(el) {
-        if (!el) return null;
-        if (el.type === 'checkbox') return el.checked;
-        if (el.tagName === 'SELECT') return el.value;
-        if (el.tagName === 'INPUT' && el.type === 'number') {
-            return el.value === '' ? null : Number(el.value);
-        }
-        return el.value;
-    }
-
-    function isEqual(a, b) {
-        if (a === null && b === null) return true;
-        return String(a) === String(b);
-    }
+    const pick = (...vals) => vals.find(v => v !== undefined && v !== null);
+    const safeDiv = (a, b, dflt = 0) => (b ? a / b : dflt);
 
     // --- CORE LOGIC ---
     async function main() {
@@ -137,120 +98,217 @@ document.addEventListener('DOMContentLoaded', () => {
         setupLanguage();
         await loadModels();
         setupEventListeners();
-        loadStateFromHash();
     }
 
     function finishInitialization() {
         populateModelSelect();
         applyModel();
-        calculate();
     }
 
-    function parseConfig(id, config, meta) {
-        const isMoE =
-            (config.architectures?.[0] || '').toLowerCase().includes('moe') ||
-            (config.num_local_experts ?? 0) > 1 ||
-            (config.n_routed_experts ?? 0) > 0 ||
-            (config.num_experts ?? 0) > 0;
+    // --- PARSING & UI RENDERING ---
+    function parseConfig(config) {
+        const arch = [];
+        const textSource = config.text_config || config;
+        const vocabSize = pick(textSource.vocab_size, config.vocab_size);
+        const tieEmb = pick(textSource.tie_word_embeddings, config.tie_word_embeddings, false);
 
-        const ffnMult = (config.intermediate_size && config.hidden_size)
-            ? (config.intermediate_size / config.hidden_size) : null;
+        const H = textSource.hidden_size;
+        const L = textSource.num_hidden_layers;
+        if (!H || !L) {
+            console.error("Core parameters (hidden_size, num_hidden_layers) not found in config.", config);
+            return []; // Return empty architecture if core params are missing
+        }
+        
+        const headDim = pick(textSource.head_dim, 128);
+        const A = pick(textSource.num_attention_heads, Math.max(1, Math.round(safeDiv(H, headDim, 1))));
+        const kvHeads = pick(textSource.num_key_value_heads, A);
 
-        const parsed = {
-            id: id,
-            name: meta.name,
-            family: meta.family,
-            license: meta.license,
-            notes: meta.notes,
-            links: meta.links,
+        // 1. Embedding Layer
+        arch.push({ type: 'embedding', vocab: vocabSize, hidden: H });
 
-            layers: config.num_hidden_layers,
-            hidden: config.hidden_size,
-            heads: config.num_attention_heads,
-            kvHeads: config.num_key_value_heads,
-            ffnMult: ffnMult ? parseFloat(ffnMult.toFixed(2)) : null,
-            vocab: config.vocab_size,
-            ctx: config.max_position_embeddings,
-            tieEmb: config.tie_word_embeddings,
-
-            isMoE: isMoE,
-            mlp: config.hidden_act === 'silu' ? 'GatedMLP' : 'StandardMLP',
-            norm: config.rms_norm_eps ? 'RMSNorm' : 'LayerNorm',
-            pos_embedding: 'RoPE', // Default
-        };
-
-        if (isMoE) {
-            parsed.moeExperts =
-                config.num_local_experts || config.num_experts ||
-                ((config.n_routed_experts || 0) + (config.n_shared_experts || 0));
-            
-            const topK = config.num_experts_per_tok || config.experts_per_token || 0;
-            parsed.moeShared = config.n_shared_experts || 0;
-            // Active experts = topK routed experts + always-active shared experts
-            parsed.moeActiveExperts = topK + parsed.moeShared;
-            
-            // The actual intermediate size for each expert's FFN
-            parsed.moeInter = config.moe_intermediate_size || null;
-            // Some models (like DeepSeek) have dense layers at the beginning
-            parsed.moeDenseReplace = config.first_k_dense_replace || 0;
+        // 2. Vision Tower (if exists)
+        if (config.vision_config) {
+            const vc = config.vision_config;
+            arch.push({
+                type: 'vision_tower',
+                count: vc.num_hidden_layers,
+                hidden: vc.hidden_size,
+                heads: vc.num_attention_heads,
+                ffnMult: safeDiv(vc.intermediate_size, vc.hidden_size, 4),
+                kvHeads: pick(vc.num_key_value_heads, vc.num_attention_heads),
+                participateInKV: false
+            });
         }
 
-        // Special case for DeepSeek's MLA attention for accurate KV cache calculation
-        if ((config.model_type || '').startsWith('deepseek_') || ('kv_lora_rank' in config)) {
-            parsed.attention = 'MLA';
-            parsed.kvDimMLA = config.kv_lora_rank || null;
-            parsed.mlaRopeKV = config.qk_rope_head_dim || null;
+        // --- START: REVISED LOGIC FOR GROUPING LAYERS ---
+
+        // 3. Define layer properties
+        const isMLA = (config.model_type || '').includes('deepseek') || (config.attention || '').toUpperCase() === 'MLA';
+        const expertsTotal = pick(textSource.num_local_experts, textSource.num_experts, config.n_routed_experts);
+        const expertsTopK = pick(textSource.num_experts_per_tok, config.experts_per_token, config.topk_group);
+        const expertsShared = pick(textSource.n_shared_experts, 0);
+        const isMoE = !!expertsTotal && expertsTotal > 1;
+
+        const interDense = textSource.intermediate_size;
+        const interMoE = pick(textSource.moe_intermediate_size, config.moe_intermediate_size);
+        const ffnMult = isMoE ? safeDiv(interMoE ?? interDense, H, 4) : safeDiv(interDense, H, 4);
+
+        const layerTypes = textSource.layer_types || Array(L).fill('full_attention');
+        const slideWin = pick(textSource.sliding_window, config.sliding_window, null);
+
+        // 4. Group all identical layer types together, regardless of their position
+        const layerGroups = {};
+
+        for (const lt of layerTypes) {
+            // Create a template for the current layer type to generate a unique key
+            const blockTemplate = {
+                type: 'attention_layer',
+                layerType: lt,
+                hidden: H,
+                heads: A,
+                kvHeads,
+                ffnMult,
+                isMoE,
+                attentionKind: isMLA ? 'MLA' : 'STANDARD',
+                windowLen: lt === 'sliding_attention' ? slideWin : null
+            };
+            if (isMoE) {
+                blockTemplate.moeExperts = expertsTotal;
+                blockTemplate.moeActiveExperts = (expertsTopK || 0) + (expertsShared || 0);
+            }
+            if (isMLA) {
+                blockTemplate.mla = {
+                    qRank: config.q_lora_rank,
+                    kvRank: config.kv_lora_rank,
+                    qkRope: config.qk_rope_head_dim,
+                    vHeadDim: config.v_head_dim
+                };
+            }
+
+            // Use a stringified version of the template as a key for grouping
+            const groupKey = JSON.stringify(blockTemplate);
+
+            if (layerGroups[groupKey]) {
+                layerGroups[groupKey].count++;
+            } else {
+                layerGroups[groupKey] = {
+                    ...blockTemplate,
+                    count: 1 // Initialize count
+                };
+            }
         }
 
-        return parsed;
+        // 5. Add the final grouped blocks to the main architecture array
+        arch.push(...Object.values(layerGroups));
+
+        // --- END: REVISED LOGIC ---
+
+        // 6. LM Head Layer
+        arch.push({ type: 'lm_head', vocab: vocabSize, hidden: H, tieEmb });
+        
+        return arch;
+    }
+
+    function renderArchitectureUI() {
+        const container = dom.architectureContainer;
+        container.innerHTML = '';
+        currentArchitecture.forEach((block, index) => {
+            const blockDiv = document.createElement('fieldset');
+            blockDiv.className = 'arch-block';
+            blockDiv.dataset.index = index;
+
+            let headerText = `${block.type.replace(/_/g, ' ')}`;
+            if (block.count) headerText += ` (x${block.count})`;
+            if (block.layerType) headerText += ` - <span>${block.layerType.replace('_', ' ')}</span>`;
+            if (block.isMoE) headerText += ` <span>[MoE]</span>`;
+            if (block.attentionKind === 'MLA') headerText += ` <span>[MLA]</span>`;
+
+            const gridDiv = document.createElement('div');
+            gridDiv.className = 'arch-grid';
+
+            const createInput = (key, label, readOnly = false) => {
+                const value = block[key];
+                if (typeof value === 'undefined' || value === null || typeof value === 'boolean') return '';
+                return `
+                    <div class="arch-grid-item">
+                        <label>${label}</label>
+                        <input type="number" data-key="${key}" value="${value}" ${readOnly ? 'readonly' : ''}>
+                    </div>
+                `;
+            };
+
+            let fieldsHTML = '';
+            switch (block.type) {
+                case 'embedding':
+                case 'lm_head':
+                    fieldsHTML = createInput('vocab', 'Vocabulary') + createInput('hidden', 'Hidden H');
+                    if (block.tieEmb) fieldsHTML += '<div class="arch-grid-item"><label>Tied Embeddings</label><input type="text" value="Yes" readonly></div>';
+                    break;
+                case 'vision_tower':
+                case 'attention_layer':
+                    fieldsHTML = createInput('count', 'Layers') + createInput('hidden', 'Hidden H') + createInput('heads', 'Heads A') + createInput('kvHeads', 'KV Heads') + createInput('ffnMult', 'FFN Mult');
+                    if (block.windowLen) fieldsHTML += createInput('windowLen', 'Window', true);
+                    if (block.isMoE) {
+                        fieldsHTML += createInput('moeExperts', 'Total Experts') + createInput('moeActiveExperts', 'Active Exp.');
+                    }
+                    if (block.attentionKind === 'MLA' && block.mla) {
+                        fieldsHTML += createInput('qRank', 'MLA Q Rank', true, block.mla) + createInput('kvRank', 'MLA KV Rank', true, block.mla);
+                    }
+                    break;
+            }
+            gridDiv.innerHTML = fieldsHTML;
+            blockDiv.innerHTML = `<legend class="arch-block-header">${headerText}</legend>`;
+            blockDiv.appendChild(gridDiv);
+            container.appendChild(blockDiv);
+        });
+
+        $$('#architecture-container input:not([readonly])').forEach(el => {
+            el.addEventListener('input', () => {
+                updateArchitectureFromUI();
+                updateButtonAndTitleState();
+                calculate();
+            });
+        });
     }
 
     async function loadModels() {
         try {
             const indexResponse = await fetch('models/index.json');
             const modelIds = await indexResponse.json();
-
-            const promises = modelIds.map(id => Promise.all([
-                fetch(`models/${id}/config.json`).then(res => res.json()),
-                fetch(`models/${id}/meta.json`).then(res => res.json())
-            ]).then(([config, meta]) => {
-                MODELS[id] = parseConfig(id, config, meta);
-            }));
-
+            const promises = modelIds.map(id =>
+                Promise.all([
+                    fetch(`models/${id}/config.json`).then(res => res.json()),
+                    fetch(`models/${id}/meta.json`).then(res => res.json())
+                ]).then(([config, meta]) => {
+                    MODELS[id] = { id, config, meta };
+                })
+            );
             await Promise.all(promises);
             finishInitialization();
         } catch (error) {
             console.error("Failed to fetch model data:", error);
-            alert("Could not fetch model data. Check the `models` directory and `index.json`.");
+            alert("Could not fetch model data.");
         }
     }
 
     function setupEventListeners() {
         Object.values(dom.langButtons).forEach(btn => btn.addEventListener('click', (e) => setLanguage(e.target.id.split('-')[1])));
         dom.themeToggle.addEventListener('click', toggleTheme);
-        dom.modelSelect.addEventListener('change', () => { applyModel(); calculate(); saveStateToHash(); });
+        dom.modelSelect.addEventListener('change', () => { applyModel(); });
         
         $$('input, select').forEach(el => {
-            const handler = () => {
-                if (el.id === 'isMoE') {
-                    dom.moeDetailsRow.style.display = el.checked ? 'grid' : 'none';
-                }
-                if (ARCH_KEYS.includes(el.id)) {
-                    updateButtonAndTitleState();
-                }
-                calculate();
-            };
-            el.addEventListener('change', handler);
-            el.addEventListener('input', handler);
+            if (el.id.startsWith('upload')) return;
+            el.addEventListener('change', calculate);
+            el.addEventListener('input', calculate);
         });
 
         Object.values(dom.tabs).forEach(tab => tab.addEventListener('click', () => switchTab(tab.dataset.tab)));
-        window.addEventListener('hashchange', loadStateFromHash);
-        dom.shareBtn.addEventListener('click', shareState);
-        dom.resetBtn.addEventListener('click', () => { applyModel(); calculate(); saveStateToHash(); });
+        dom.resetBtn.addEventListener('click', () => { applyModel(); });
+        dom.downloadConfigBtn.addEventListener('click', downloadConfig);
+        dom.uploadConfigInput.addEventListener('change', uploadConfig);
     }
 
-    // --- THEME & LANGUAGE ---
+    // --- THEME & LANGUAGE --- [без изменений]
     function applyTranslations() {
         document.documentElement.lang = currentLang;
         $$('[data-t]').forEach(el => {
@@ -261,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (Object.keys(MODELS).length > 0) {
             populateModelSelect();
             applyModel();
-            calculate();
         }
     }
 
@@ -275,8 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function setupLanguage() {
         const savedLang = localStorage.getItem('llm_fit_lang');
-        const lang = savedLang || 'en';
-        setLanguage(lang);
+        setLanguage(savedLang || 'en');
     }
 
     function applyTheme(theme) {
@@ -295,14 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
     }
-
     // --- UI & STATE MANAGEMENT ---
     function populateModelSelect() {
         const currentVal = dom.modelSelect.value;
         const modelGroups = {};
-        Object.values(MODELS).forEach(m => {
-            if (!modelGroups[m.family]) modelGroups[m.family] = [];
-            modelGroups[m.family].push(m);
+        Object.entries(MODELS).forEach(([id, m]) => {
+            const family = m.meta.family || 'Other';
+            if (!modelGroups[family]) modelGroups[family] = [];
+            modelGroups[family].push({ id, name: m.meta.name });
         });
 
         dom.modelSelect.innerHTML = Object.entries(modelGroups).map(([family, models]) => `
@@ -310,59 +366,68 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${models.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
             </optgroup>
         `).join('');
-        
+
         if ([...dom.modelSelect.options].some(o => o.value === currentVal)) {
             dom.modelSelect.value = currentVal;
+        } else {
+            dom.modelSelect.selectedIndex = 0;
         }
     }
 
-    function getSelectedModel() {
+    function getSelectedModelData() {
         return MODELS[dom.modelSelect.value];
     }
 
     function applyModel() {
-        const model = getSelectedModel();
-        if (!model) return;
+        const modelData = getSelectedModelData();
+        if (!modelData) return;
         
-        Object.keys(model).forEach(key => {
-            if (dom[key]) {
-                const value = model[key];
-                if (dom[key].type === 'checkbox') {
-                    dom[key].checked = !!value;
-                } else {
-                    dom[key].value = (value !== undefined && value !== null) ? value : '';
-                }
-            }
-        });
+        currentArchitecture = parseConfig(modelData.config);
+        originalArchitecture = JSON.parse(JSON.stringify(currentArchitecture));
         
-        dom.moeDetailsRow.style.display = dom.isMoE.checked ? 'grid' : 'none';
-        dom.modelNotes.textContent = model.notes?.[currentLang] || model.notes?.['en'] || '';
-        dom.modelLinks.innerHTML = model.links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
+        renderArchitectureUI();
         
-        originalModelState = {};
-        ARCH_KEYS.forEach(k => {
-            if (dom[k]) originalModelState[k] = readVal(dom[k]);
-        });
+        dom.modelNotes.textContent = modelData.meta.notes?.[currentLang] || modelData.meta.notes?.['en'] || '';
+        dom.modelLinks.innerHTML = modelData.meta.links?.map(l => `<a href='${l.href}' target='_blank' rel='noopener'>${l.t}</a>`).join(' • ') || '';
         
         updateButtonAndTitleState();
+        calculate();
     }
-
+    
+    // --- Остальные функции UI & State Management без изменений ---
+    function updateArchitectureFromUI() {
+        $$('.arch-block').forEach(blockDiv => {
+            const index = parseInt(blockDiv.dataset.index, 10);
+            const block = currentArchitecture[index];
+            blockDiv.querySelectorAll('input[data-key]').forEach(input => {
+                const key = input.dataset.key;
+                const value = Number(input.value);
+                if (!isNaN(value)) {
+                    if (key.includes('.')) { // Handle nested keys like mla.qRank
+                        const [parent, child] = key.split('.');
+                        if (block[parent]) block[parent][child] = value;
+                    } else {
+                        block[key] = value;
+                    }
+                }
+            });
+        });
+    }
     function isArchModified() {
-        const current = collectState();
-        return ARCH_KEYS.some(k => !isEqual(current[k], originalModelState[k]));
+        return JSON.stringify(currentArchitecture) !== JSON.stringify(originalArchitecture);
     }
 
     function updateButtonAndTitleState() {
         const modified = isArchModified();
         const option = dom.modelSelect.options[dom.modelSelect.selectedIndex];
         if (option) {
-            const model = getSelectedModel();
+            const modelData = getSelectedModelData();
             if (modified) {
                 if (!option.text.includes(t('custom_model'))) {
                     option.text += ` ${t('custom_model')}`;
                 }
             } else {
-                if (model) option.text = model.name;
+                if (modelData) option.text = modelData.meta.name;
             }
         }
         dom.resetBtn.style.display = modified ? 'block' : 'none';
@@ -374,211 +439,211 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.tabs[tab].classList.add('active');
         dom.panes[tab].style.display = 'block';
         calculate();
-        saveStateToHash();
     }
 
-    function collectState() {
-        const s = {};
-        STATE_KEYS.forEach(k => {
-            const el = dom[k];
-            if (el) s[k] = readVal(el);
-        });
-        s.tab = document.querySelector('.tab-btn.active')?.dataset?.tab || 'train';
-        s.lang = currentLang;
-        return s;
+    function downloadConfig() {
+        updateArchitectureFromUI();
+        const jsonString = JSON.stringify(currentArchitecture, null, 2);
+        const blob = new Blob([jsonString], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${dom.modelSelect.value}-custom.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 
-    function applyState(s) {
-        if (!s) return;
-        if (s.modelSelect && dom.modelSelect) dom.modelSelect.value = s.modelSelect;
-        applyModel();
-        STATE_KEYS.forEach(k => {
-            if (k === 'modelSelect') return;
-            if (s[k] != null && dom[k]) {
-                if (dom[k].type === 'checkbox') dom[k].checked = s[k];
-                else dom[k].value = s[k];
-            }
-        });
-        dom.moeDetailsRow.style.display = dom.isMoE.checked ? 'grid' : 'none';
-        updateButtonAndTitleState();
-        switchTab(s.tab || 'train');
-        if (s.lang && s.lang !== currentLang) setLanguage(s.lang);
-    }
-
-    function saveStateToHash() {
-        try {
-            const state = collectState();
-            const pruned = {};
-            Object.entries(state).forEach(([k,v]) => {
-                if (v === '' || v === null || typeof v === 'undefined' || v === false) return;
-                pruned[k] = v;
-            });
-            const hash = btoa(JSON.stringify(pruned));
-            history.replaceState(null, '', '#' + hash);
-        } catch (e) {
-            console.error("Failed to save state to hash:", e);
-        }
-    }
-
-    function loadStateFromHash() {
-        if (location.hash.length > 1) {
+    function uploadConfig(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
             try {
-                const state = JSON.parse(atob(location.hash.slice(1)));
-                applyState(state);
-            } catch (e) { console.error("Failed to load state from hash:", e); }
-        }
+                const newArch = JSON.parse(e.target.result);
+                if (Array.isArray(newArch) && newArch.every(b => b.type)) {
+                    currentArchitecture = newArch;
+                    originalArchitecture = JSON.parse(JSON.stringify(newArch));
+                    renderArchitectureUI();
+                    updateButtonAndTitleState();
+                    calculate();
+                    const option = dom.modelSelect.options[dom.modelSelect.selectedIndex];
+                    if (option && !option.text.includes(t('custom_model'))) {
+                         option.text += ` ${t('custom_model')}`;
+                    }
+                } else {
+                    alert('Invalid configuration file format.');
+                }
+            } catch (err) {
+                alert('Error parsing configuration file.');
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
     }
-    
-    async function copyToClipboard(text) {
-        try {
-            await navigator.clipboard.writeText(text);
-        } catch (err) {
-            console.error('Failed to copy: ', err);
-        }
-    }
-
-    function shareState() {
-        saveStateToHash();
-        copyToClipboard(window.location.href);
-        const originalText = dom.shareBtn.textContent;
-        dom.shareBtn.textContent = t('copied');
-        setTimeout(() => { dom.shareBtn.textContent = originalText; }, 1500);
-    }
-
     // --- CALCULATIONS ---
     function bytesOf(dtype) {
         const map = { fp32: 4, bf16: 2, fp16: 2, amp: 2, int8: 1, int4: 0.5, int3: 0.375, int2: 0.25, q4lora: 0.55 };
         return map[dtype] || 2;
     }
 
-    // --- START: MODIFIED CODE ---
-    function calculateParameters(s) {
-        const { layers: L, hidden: H, heads: A, kvHeads, ffnMult: fm, vocab: V, tieEmb, mlp, isMoE, moeExperts, moeActiveExperts } = s;
-        const model = getSelectedModel() || {};
-        
-        if (!(L > 0 && H > 0 && A > 0 && V > 0)) {
-            return { total: 0, active: 0 };
-        }
+    function calculateParameters() {
+        let total = 0, active = 0;
+        const ffnCoeff = 3; // For SwiGLU/GeGLU activations
 
-        const AkEff = (typeof kvHeads === 'number' && kvHeads > 0) ? kvHeads : A;
-        const kvRatio = AkEff / A;
-        const attn = L * (H * H * (2 + 2 * kvRatio));
-        const emb = V * H;
-        const lmHead = (tieEmb === 'true' || tieEmb === true) ? 0 : V * H;
-        const coeff = (mlp === 'GatedMLP' ? 3 : 2);
+        for (const block of currentArchitecture) {
+            const L = block.count || 1;
+            const H = block.hidden || 0;
+            const V = block.vocab || 0;
+            const A = block.heads || 0;
+            const kvHeads = block.kvHeads || A;
+            const fmult = block.ffnMult || 0;
+            const headDim = safeDiv(H, A);
 
-        let ffn_total = 0, ffn_active = 0;
+            let blockTotal = 0, blockActive = 0;
 
-        if (isMoE) {
-            const E_total = (typeof moeExperts === 'number' && moeExperts > 0) ? moeExperts : 1;
-            const E_active = (typeof moeActiveExperts === 'number' && moeActiveExperts > 0) ? moeActiveExperts : Math.min(1, E_total);
+            if (block.type === 'embedding') {
+                blockTotal = V * H;
+            } else if (block.type === 'lm_head') {
+                if (!block.tieEmb) blockTotal = V * H;
+            } else if (block.type === 'vision_tower' || block.type === 'attention_layer') {
+                if (H > 0 && A > 0) {
+                    let attnParams = 0;
+                    if (block.attentionKind === 'MLA' && block.mla) {
+                        const { qRank, kvRank, qkRope, vHeadDim } = block.mla;
+                        attnParams = (H * qRank) + (H * kvRank * 2) + (A * vHeadDim * H);
+                    } else {
+                        attnParams = (H * A * headDim) + (H * kvHeads * headDim * 2) + (H * A * headDim);
+                    }
 
-            if (model.moeInter) {
-                // Case 1: Advanced MoE with specific expert size (Qwen3, DeepSeek)
-                const perExpertParams = coeff * H * model.moeInter;
-                const L_dense = Math.min(L, Number(model.moeDenseReplace || 0));
-                const L_moe = Math.max(0, L - L_dense);
-                const densePerLayerParams = (model.ffnMult ? coeff * model.ffnMult * H * H : 0);
-                
-                ffn_total  = (L_moe * E_total  * perExpertParams) + (L_dense * densePerLayerParams);
-                ffn_active = (L_moe * E_active * perExpertParams) + (L_dense * densePerLayerParams);
-            } else {
-                // Case 2: Standard MoE where each expert is a full FFN (GPT-OSS)
-                const ffnMultEff = (typeof fm === 'number' && fm > 0) ? fm : (model.ffnMult || 0);
-                const baseFfnPerLayer = coeff * ffnMultEff * H * H;
-                ffn_total = L * E_total * baseFfnPerLayer;
-                ffn_active = L * E_active * baseFfnPerLayer;
+                    const normParams = 2 * H;
+                    let ffnTotalParams = 0, ffnActiveParams = 0;
+
+                    if (block.isMoE) {
+                        const routerParams = H * (block.moeExperts || 1);
+                        const baseFfn = ffnCoeff * fmult * H * H;
+                        ffnTotalParams = routerParams + baseFfn * (block.moeExperts || 1);
+                        ffnActiveParams = routerParams + baseFfn * (block.moeActiveExperts || 1);
+                    } else {
+                        ffnTotalParams = ffnCoeff * fmult * H * H;
+                        ffnActiveParams = ffnTotalParams;
+                    }
+
+                    blockTotal = L * (attnParams + ffnTotalParams + normParams);
+                    blockActive = L * (attnParams + ffnActiveParams + normParams);
+                }
             }
-        } else {
-            // Case 3: Dense model
-            const ffnMultEff = (typeof fm === 'number' && fm > 0) ? fm : (model.ffnMult || 0);
-            const perLayerParams = coeff * ffnMultEff * H * H;
-            ffn_total = L * perLayerParams;
-            ffn_active = ffn_total;
+            total += blockTotal;
+            active += (blockActive > 0 ? blockActive : blockTotal);
         }
-
-        const total = attn + ffn_total + emb + lmHead;
-        const active = attn + ffn_active + emb + lmHead;
         return { total, active };
     }
-    // --- END: MODIFIED CODE ---
+
+    function getKvCacheBytesGeneric(seqLen, batch, bytesPerEl) {
+        let kvBytes = 0;
+        for (const block of currentArchitecture) {
+            if (block.type !== 'attention_layer' || block.participateInKV === false) continue;
+
+            const L = block.count || 0;
+            const H = block.hidden || 0;
+            const A = block.heads || 1;
+            const kvHeads = block.kvHeads || A;
+            const headDim = safeDiv(H, A);
+            const effSeq = block.windowLen ? Math.min(seqLen, block.windowLen) : seqLen;
+
+            let perLayerBytes = 0;
+            if (block.attentionKind === 'MLA' && block.mla) {
+                perLayerBytes = (block.mla.qkRope + block.mla.vHeadDim) * A * effSeq * batch * bytesPerEl;
+            } else {
+                perLayerBytes = 2 * kvHeads * headDim * effSeq * batch * bytesPerEl;
+            }
+            kvBytes += L * perLayerBytes;
+        }
+        return kvBytes;
+    }
 
     function calcTrainingMemory(s) {
         const table = [];
-        const { total: totalParams, active: activeParams } = calculateParameters(s);
-        let weightBytes = bytesOf(s.precisionTrain), gradBytes = 2, actBytes = 2, masterBytes = 0, optBytes = 4, optStates = 0;
-        if (s.precisionTrain === 'fp32') { gradBytes = 4; actBytes = 4; }
-        if (s.precisionTrain === 'amp') { masterBytes = 4; }
-        if (s.optimizer === 'adamw') optStates = 2; else if (s.optimizer === 'sgdm') optStates = 1;
-
-        const D = Math.max(1, s.dp), zero = s.zero | 0;
-        const partW = zero >= 3 ? 1 / D : 1, partG = zero >= 2 ? 1 / D : 1, partO = zero >= 1 ? 1 / D : 1;
+        const { total: totalParams, active: activeParams } = calculateParameters();
+        const actBytes = (s.precisionTrain === 'fp32') ? 4 : 2;
 
         const mem = {};
-        
         if (s.precisionTrain === 'q4lora') {
-            mem.weights = totalParams * bytesOf('int4') * partW;
-            mem.grads = 0; mem.optim = 0; mem.masterWeights = 0;
+            mem.weights = totalParams * bytesOf('int4');
+            const loraParams = totalParams * 0.02; // Assume 2% trainable params for LoRA
+            mem.grads = loraParams * 2; // BF16 grads
+            mem.optim = loraParams * 4 * 2; // AdamW states
         } else {
+            const weightBytes = bytesOf(s.precisionTrain);
+            const gradBytes = (s.precisionTrain === 'fp32') ? 4 : 2;
+            const masterBytes = (s.precisionTrain === 'amp') ? 4 : 0;
+            const optStates = (s.optimizer === 'adamw') ? 2 : (s.optimizer === 'sgdm' ? 1 : 0);
+            
+            const D = Math.max(1, s.dp), zero = s.zero | 0;
+            const partW = zero >= 3 ? 1 / D : 1, partG = zero >= 2 ? 1 / D : 1, partO = zero >= 1 ? 1 / D : 1;
+
             mem.weights = totalParams * weightBytes * partW;
-            if (masterBytes > 0) mem.masterWeights = totalParams * masterBytes * (zero >= 1 ? 1 / D : 1);
-            mem.grads = totalParams * gradBytes * partG;
-            if (optStates > 0) mem.optim = totalParams * optBytes * optStates * partO;
+            if (masterBytes > 0) mem.masterWeights = totalParams * masterBytes * partO;
+            mem.grads = activeParams * gradBytes * partG;
+            if (optStates > 0) mem.optim = activeParams * 4 * optStates * partO;
         }
 
-        const ckptFactor = s.ckpt === 'full' ? Math.max(2, Math.sqrt(s.layers)) : 1;
-        let perSeqActivations = ACT_COEFF * s.layers * s.hidden * s.seqTrain * actBytes / ckptFactor;
-        if (s.flash !== 'true') {
-            perSeqActivations += s.layers * s.heads * s.seqTrain * s.seqTrain * actBytes;
-        }
+        let totalLayers = 0, maxHidden = 0;
+        currentArchitecture.forEach(b => {
+            if (b.type === 'attention_layer') {
+                totalLayers += (b.count || 0);
+                if (b.hidden > maxHidden) maxHidden = b.hidden;
+            }
+        });
+
+        const ckptFactor = s.ckpt === 'full' ? Math.max(2, Math.sqrt(totalLayers)) : 1;
+        const flashFactor = s.flash === 'true' ? 0.7 : 1.0;
+        let perSeqActivations = ACT_COEFF * flashFactor * totalLayers * maxHidden * s.seqTrain * actBytes / ckptFactor;
         mem.activations = perSeqActivations * s.mbsz;
+        mem.kvCache = getKvCacheBytesGeneric(s.seqTrain, s.mbsz, actBytes);
 
         table.push([t('weights'), fmtGB(toGB(mem.weights))]);
         if (mem.masterWeights) table.push([t('master_weights'), fmtGB(toGB(mem.masterWeights))]);
-        if (s.precisionTrain !== 'q4lora') {
-            table.push([t('gradients'), fmtGB(toGB(mem.grads))]);
-            if (mem.optim) table.push([`${t('optimizer_states')} (${s.optimizer.toUpperCase()})`, fmtGB(toGB(mem.optim))]);
-        }
+        if (mem.grads) table.push([t('gradients'), fmtGB(toGB(mem.grads))]);
+        if (mem.optim) table.push([`${t('optimizer_states')} (${s.optimizer.toUpperCase()})`, fmtGB(toGB(mem.optim))]);
         table.push([t('activations'), fmtGB(toGB(mem.activations))]);
-        table.push([t('mem_per_sequence'), fmtMB(toMB(perSeqActivations))]);
-
+        table.push([t('kv_cache'), fmtGB(toGB(mem.kvCache))]);
+        
         const totalBytes = Object.values(mem).reduce((a, b) => a + (b || 0), 0);
         return { totalParams, activeParams, table, totalGB: toGB(totalBytes * 1.05) };
-    }
-    
-    function getKvCacheBytes(s) {
-        const model = getSelectedModel();
-        if (model?.attention === 'MLA' && (model.kvDimMLA || model.mlaRopeKV)) {
-            const headsEff = (typeof s.heads === 'number' && s.heads > 0) ? s.heads : 1;
-            const elemsPerTok = Number(model.kvDimMLA || 0) + headsEff * Number(model.mlaRopeKV || 0);
-            return s.layers * elemsPerTok * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
-        }
-        const headsEff = (typeof s.heads === 'number' && s.heads > 0) ? s.heads : 1;
-        const kvHeadsEff = (typeof s.kvHeads === 'number' && s.kvHeads > 0) ? s.kvHeads : headsEff;
-        const headDim = (typeof s.hidden === 'number' && s.hidden > 0) ? (s.hidden / headsEff) : 1;
-        return 2 * s.layers * kvHeadsEff * headDim * s.seqInfer * s.batchInfer * bytesOf(s.quantKV);
     }
 
     function calcInferenceMemory(s) {
         const table = [];
-        const { total: totalParams, active: activeParams } = calculateParameters(s);
+        const { total: totalParams } = calculateParameters();
         const mem = {};
         mem.weights = totalParams * bytesOf(s.quant);
-        mem.kvCache = getKvCacheBytes(s);
+        mem.kvCache = getKvCacheBytesGeneric(s.seqInfer, s.batchInfer, bytesOf(s.quantKV));
         
-        const bufFactor = (s.quant === 'int4' || s.quant === 'int8') ? 0.15 : 0.05;
+        const bufFactor = (s.quant.startsWith('int')) ? 0.15 : 0.05;
         mem.buffers = mem.weights * bufFactor;
 
         table.push([t('weights'), fmtGB(toGB(mem.weights))]);
         table.push([t('kv_cache'), fmtGB(toGB(mem.kvCache))]);
         table.push([t('buffers'), fmtGB(toGB(mem.buffers))]);
 
-        const totalBytes = Object.values(mem).reduce((a, b) => a + b, 0);
-        return { totalParams, activeParams, table, totalGB: toGB(totalBytes * 1.05) };
+        const totalBytes = Object.values(mem).reduce((a, b) => a + (b || 0), 0);
+        return { totalParams, activeParams: 0, table, totalGB: toGB(totalBytes * 1.05) };
+    }
+
+    function collectState() {
+        const s = {};
+        const fields = ['precisionTrain','optimizer','dp','zero','seqTrain','mbsz','ckpt','flash','quant','quantKV','seqInfer','batchInfer'];
+        fields.forEach(k => {
+            const el = dom[k];
+            if (el) s[k] = (el.type === 'number' ? Number(el.value) : el.value);
+        });
+        return s;
     }
 
     function calculate() {
-        if (Object.keys(MODELS).length === 0) return;
+        if (Object.keys(MODELS).length === 0 || currentArchitecture.length === 0) return;
         const s = collectState();
         const mode = document.querySelector('.tab-btn.active').dataset.tab;
         const result = mode === 'train' ? calcTrainingMemory(s) : calcInferenceMemory(s);
@@ -586,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalB = (result.totalParams / 1e9).toFixed(2);
         const activeB = (result.activeParams / 1e9).toFixed(2);
         
-        if (Math.abs(result.totalParams - result.activeParams) < 1e6 || result.activeParams === 0) {
+        if (Math.abs(result.totalParams - result.activeParams) < 1e6 || result.activeParams === 0 || mode === 'infer') {
             dom.paramsTotal.innerHTML = `${totalB}B`;
         } else {
             dom.paramsTotal.innerHTML = `${totalB}B <span class="active-params">(${activeB}B active)</span>`;
