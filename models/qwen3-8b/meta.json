@@ -1,0 +1,15 @@
+{
+  "name": "Qwen 3 8B",
+  "family": "Qwen",
+  "license": "Qianwen",
+  "notes": {
+    "en": "Qwen 3 is the third generation of the Qwen Large Language Model series by Alibaba Cloud. This is the 8B dense model variant.",
+    "ru": "Qwen 3 - третье поколение больших языковых моделей от Alibaba Cloud. Это плотная модель на 8B параметров."
+  },
+  "links": [
+    {
+      "t": "Qwen 3 Blog",
+      "href": "https://qwenlm.github.io/blog/qwen3/"
+    }
+  ]
+}

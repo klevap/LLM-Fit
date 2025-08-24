@@ -1,0 +1,15 @@
+{
+  "name": "Qwen 3 Coder 30B",
+  "family": "Qwen",
+  "license": "Qianwen",
+  "notes": {
+    "en": "A 30B Mixture-of-Experts model from the Qwen 3 family, specialized for coding tasks.",
+    "ru": "MoE модель на 30B параметров из семейства Qwen 3, специализированная для задач программирования."
+  },
+  "links": [
+    {
+      "t": "Qwen 3 Blog",
+      "href": "https://qwenlm.github.io/blog/qwen3/"
+    }
+  ]
+}

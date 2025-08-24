@@ -1,0 +1,15 @@
+{
+  "name": "Gemma 3 12B IT",
+  "family": "Gemma",
+  "license": "Gemma",
+  "notes": {
+    "en": "Gemma 3 is a family of lightweight, state-of-the-art open models from Google. This is the 12B instruction-tuned variant.",
+    "ru": "Gemma 3 — это семейство легковесных, современных открытых моделей от Google. Это 12B версия, дообученная на инструкциях."
+  },
+  "links": [
+    {
+      "t": "Google AI Blog",
+      "href": "https://ai.google.dev/blog/gemma-3"
+    }
+  ]
+}

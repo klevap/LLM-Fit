@@ -1,0 +1,15 @@
+{
+  "name": "Gemma 3 270M",
+  "family": "Gemma",
+  "license": "Gemma",
+  "notes": {
+    "en": "Gemma 3 is a family of lightweight, state-of-the-art open models from Google. This is the smallest 270M parameter variant.",
+    "ru": "Gemma 3 — это семейство легковесных, современных открытых моделей от Google. Это самая маленькая версия на 270M параметров."
+  },
+  "links": [
+    {
+      "t": "Google AI Blog",
+      "href": "https://ai.google.dev/blog/gemma-3"
+    }
+  ]
+}
